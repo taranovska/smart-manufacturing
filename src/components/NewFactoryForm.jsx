@@ -96,13 +96,39 @@ const NewFactoryForm = () => {
           Please select a status.
         </Form.Control.Feedback>
       </Form.Group>
-      <Form.Group className="mb-3" controlId="validationCustom06">
-        <Form.Label>Address</Form.Label>
-        <Form.Control type="text" placeholder="Enter address" required />
-        <Form.Control.Feedback type="invalid">
-          Please provide a valid address.
-        </Form.Control.Feedback>
-      </Form.Group>
+      <Row className="mb-3">
+        <Form.Group as={Col} controlId="formGridCountry">
+          <Form.Label>Country</Form.Label>
+          <Form.Control required></Form.Control>
+          <Form.Control.Feedback type="invalid">
+            Please provide country.
+          </Form.Control.Feedback>
+        </Form.Group>
+
+        <Form.Group as={Col} controlId="formGridCity">
+          <Form.Label>City</Form.Label>
+          <Form.Control required></Form.Control>
+          <Form.Control.Feedback type="invalid">
+            Please provide city.
+          </Form.Control.Feedback>
+        </Form.Group>
+
+        <Form.Group as={Col} controlId="formGridStreet">
+          <Form.Label>Street</Form.Label>
+          <Form.Control required></Form.Control>
+          <Form.Control.Feedback type="invalid">
+            Please provide street.
+          </Form.Control.Feedback>
+        </Form.Group>
+
+        <Form.Group as={Col} controlId="formGridZip">
+          <Form.Label>Zip Code</Form.Label>
+          <Form.Control required></Form.Control>
+          <Form.Control.Feedback type="invalid">
+            Please provide zip code.
+          </Form.Control.Feedback>
+        </Form.Group>
+      </Row>
       <Button variant="primary" type="submit">
         Submit
       </Button>
