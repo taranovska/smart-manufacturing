@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Spinner, Table } from "react-bootstrap";
+import { Button, Spinner, Table } from "react-bootstrap";
 import styles from "./FactoriesList.module.css";
+import edit from "../img/edit.png";
+import remove from "../img/remove.png";
 
 const FactoriesList = () => {
   const headers = [
@@ -44,12 +46,14 @@ const FactoriesList = () => {
       )}
 
       {data && !loading && (
-        <Table responsive>
+        <Table striped bordered hover variant="dark" responsive>
           <thead>
             <tr>
               {headers.map((header, index) => (
                 <th key={index}>{header}</th>
               ))}
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -66,6 +70,24 @@ const FactoriesList = () => {
                   <td>{`${factory.country}, ${factory.city}, ${
                     factory.street
                   }, ${factory.zipCode === null ? "-" : factory.zipCode}`}</td>
+                  <td>
+                    <Button variant="info" href="#">
+                      <img
+                        src={edit}
+                        alt="Details"
+                        style={{ width: "1rem", height: "1rem" }}
+                      />
+                    </Button>
+                  </td>
+                  <td>
+                    <Button variant="link" href="#">
+                      <img
+                        src={remove}
+                        alt="Dismiss"
+                        style={{ width: "1.5rem", height: "1.5rem" }}
+                      />
+                    </Button>
+                  </td>
                 </tr>
               );
             })}

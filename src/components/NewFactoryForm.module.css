@@ -1,6 +1,12 @@
-.formNewFactory {
-  padding: 20px;
+.addFactory {
+  text-transform: uppercase;
+  text-decoration: none;
+  color: white;
 }
-.Lng input:focus {
-  background-color: blue;
+.buttons {
+  display: flex;
+  justify-content: space-between;
+}
+.submit {
+  text-transform: uppercase;
 }
