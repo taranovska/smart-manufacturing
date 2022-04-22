@@ -1,0 +1,6 @@
+.formNewFactory {
+  padding: 20px;
+}
+.Lng input:focus {
+  background-color: blue;
+}
