@@ -7,6 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../fetchData";
 import { DISMISS_FACTORY_DATA, EDIT_FACTORY_DATA } from "../actionsType";
 import EditFactoryForm from "./EditFactoryForm";
+import { db } from "../firebase-config";
+import { collection, getDocs } from "firebase/firestore";
+import { fetchDataSuccess } from "../actions";
+import { Link } from "react-router-dom";
 
 const FactoriesList = () => {
   const headers = [
@@ -18,13 +22,22 @@ const FactoriesList = () => {
     "address",
   ];
 
-  const [show, setShow] = useState(false);
+  const factoriesCollectionRef = collection(db, "factories");
 
-  const handleClose = () => setShow(false);
-  const handleShow = (id) => {
-    console.log(id);
-    setShow(true);
-  };
+  useEffect(() => {
+    const getFactories = async () => {
+      const dataFirebase = await getDocs(factoriesCollectionRef);
+      const data = dataFirebase.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      dispatch(fetchDataSuccess(data));
+      //     console.log(data);
+      console.log(data);
+    };
+    getFactories();
+  }, []);
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchData());
@@ -38,11 +51,9 @@ const FactoriesList = () => {
   const editHandler = (id) => {
     console.log(id);
     dispatch({ type: EDIT_FACTORY_DATA, payload: id });
-    setShow(false);
   };
 
   const data = useSelector((state) => state.data);
-  console.log(data);
 
   const loading = useSelector((state) => state.loading);
 
@@ -91,50 +102,30 @@ const FactoriesList = () => {
             </tr>
           </thead>
           <tbody>
-            {data.map((factory) => {
+            {data.map((factory, index) => {
+              const { id, name, description, latitude, longitude, status } =
+                factory;
+              const { country, city, street, zipCode } = factory.address;
               return (
-                <tr key={factory.id}>
-                  <td>{factory.id}</td>
-                  <td>{factory.name}</td>
-                  <td>{factory.description}</td>
-                  <td
-                    key={factory.id}
-                  >{`${factory.latitude} / ${factory.longitude}`}</td>
-                  <td>{factory.status}</td>
-                  <td>{`${factory.country}, ${factory.city}, ${
-                    factory.street
-                  }, ${factory.zipCode === null ? "-" : factory.zipCode}`}</td>
+                <tr key={id}>
+                  <td>{index + 1}</td>
+                  <td>{name}</td>
+                  <td>{description}</td>
+                  <td key={id}>{`${latitude} / ${longitude}`}</td>
+                  <td>{status}</td>
+                  <td>{`${country}, ${city}, ${street}, ${
+                    zipCode === null ? "-" : zipCode
+                  }`}</td>
                   <td>
-                    <Button
-                      variant="info"
-                      href="#"
-                      onClick={() => handleShow(factory.id)}
-                    >
-                      <img
-                        src={edit}
-                        alt="Details"
-                        style={{ width: "1rem", height: "1rem" }}
-                      />
+                    <Button variant="info" href="#">
+                      <Link to={`/${id}`}>
+                        <img
+                          src={edit}
+                          alt="Details"
+                          style={{ width: "1rem", height: "1rem" }}
+                        />
+                      </Link>
                     </Button>
-                    <Modal show={show} onHide={handleClose}>
-                      <Modal.Header closeButton>
-                        <Modal.Title>Edit factory data</Modal.Title>
-                      </Modal.Header>
-                      <Modal.Body>
-                        <EditFactoryForm factory={factory} />
-                      </Modal.Body>
-                      <Modal.Footer>
-                        <Button variant="secondary" onClick={handleClose}>
-                          Close
-                        </Button>
-                        <Button
-                          variant="primary"
-                          onClick={() => editHandler(factory.id)}
-                        >
-                          Save Changes
-                        </Button>
-                      </Modal.Footer>
-                    </Modal>
                   </td>
                   <td>
                     <Button

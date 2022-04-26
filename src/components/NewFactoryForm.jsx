@@ -13,6 +13,8 @@ import styles from "./NewFactoryForm.module.css";
 import Latlng from "react-input-latlng";
 import { Link } from "react-router-dom";
 import back from "../img/back.png";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../firebase-config";
 
 const NewFactoryForm = () => {
   const [validated, setValidated] = useState(false);
@@ -32,6 +34,24 @@ const NewFactoryForm = () => {
   // const regexExpLat = /^((\-?|\+?)?\d+(\.\d+)?)$/gi;
   // const regexExpLong = /^((\-?|\+?)?\d+(\.\d+)?)$/gi;
 
+  const factoriesCollectionRef = collection(db, "factories");
+
+  const createFactory = async () => {
+    await addDoc(factoriesCollectionRef, {
+      name: name,
+      description: description,
+      latitude: latitude,
+      longitude: longitude,
+      status: status,
+      address: {
+        country: country,
+        city: city,
+        street: street,
+        zipCode: zipCode,
+      },
+    });
+  };
+
   const handleSubmit = (event) => {
     const form = event.currentTarget;
     event.preventDefault();
@@ -41,7 +61,7 @@ const NewFactoryForm = () => {
       setValidated(true);
     }
     if (form.checkValidity() === true) {
-      console.log("send");
+      createFactory();
       setName("");
       setDescription("");
       setLatitude("");

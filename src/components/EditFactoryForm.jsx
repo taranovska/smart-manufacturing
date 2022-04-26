@@ -11,23 +11,28 @@ import {
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./NewFactoryForm.module.css";
 import Latlng from "react-input-latlng";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import back from "../img/back.png";
+import { useSelector } from "react-redux";
 
-const NewFactoryForm = ({ factory }) => {
-  console.log(factory);
+const EditFactoryForm = () => {
+  const params = useParams();
+  const data = useSelector((state) => state.data);
+  const currentFactory = data.find((factory) => factory.id === params.id);
+  console.log(currentFactory.name);
   const {
-    id,
     name: prevName,
     description: prevDescription,
     latitude: prevLatitude,
     longitude: prevLongitude,
     status: prevStatus,
+  } = currentFactory;
+  const {
     country: prevCountry,
     city: prevCity,
     street: prevStreet,
     zipCode: prevZipCode,
-  } = factory;
+  } = currentFactory.address;
   const [validated, setValidated] = useState(false);
 
   const [name, setName] = useState(prevName);
@@ -76,7 +81,7 @@ const NewFactoryForm = ({ factory }) => {
       onSubmit={handleSubmit}
     >
       <Form.Group className="mb-3" controlId="validationCustom01">
-        <Form.Label>Name {id}</Form.Label>
+        <Form.Label>Name </Form.Label>
         <Form.Control
           type="text"
           placeholder="Enter name"
@@ -202,4 +207,4 @@ const NewFactoryForm = ({ factory }) => {
   );
 };
 
-export default NewFactoryForm;
+export default EditFactoryForm;

@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import reducer from "./reducer";
+import EditFactoryForm from "./components/EditFactoryForm";
 
 const store = createStore(reducer, applyMiddleware(thunk));
 
@@ -19,6 +20,7 @@ function App() {
         <div className="app">
           <Routes>
             <Route exact path="/" element={<MainPage />} />
+            <Route exact path="/:id" element={<EditFactoryForm />} />
             <Route exact path="/newFactory" element={<NewFactoryForm />} />
           </Routes>
         </div>
