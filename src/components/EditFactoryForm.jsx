@@ -14,18 +14,31 @@ import Latlng from "react-input-latlng";
 import { Link } from "react-router-dom";
 import back from "../img/back.png";
 
-const NewFactoryForm = () => {
+const NewFactoryForm = ({ factory }) => {
+  console.log(factory);
+  const {
+    id,
+    name: prevName,
+    description: prevDescription,
+    latitude: prevLatitude,
+    longitude: prevLongitude,
+    status: prevStatus,
+    country: prevCountry,
+    city: prevCity,
+    street: prevStreet,
+    zipCode: prevZipCode,
+  } = factory;
   const [validated, setValidated] = useState(false);
 
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
-  const [status, setStatus] = useState("operative");
-  const [country, setCountry] = useState("");
-  const [city, setCity] = useState("");
-  const [street, setStreet] = useState("");
-  const [zipCode, setZipCode] = useState("");
+  const [name, setName] = useState(prevName);
+  const [description, setDescription] = useState(prevDescription);
+  const [latitude, setLatitude] = useState(prevLatitude);
+  const [longitude, setLongitude] = useState(prevLongitude);
+  const [status, setStatus] = useState(prevStatus);
+  const [country, setCountry] = useState(prevCountry);
+  const [city, setCity] = useState(prevCity);
+  const [street, setStreet] = useState(prevStreet);
+  const [zipCode, setZipCode] = useState(prevZipCode);
   const [latNotValid, setLatNotValid] = useState("");
   const [longNotValid, setLongNotValid] = useState("");
 
@@ -63,7 +76,7 @@ const NewFactoryForm = () => {
       onSubmit={handleSubmit}
     >
       <Form.Group className="mb-3" controlId="validationCustom01">
-        <Form.Label>Name</Form.Label>
+        <Form.Label>Name {id}</Form.Label>
         <Form.Control
           type="text"
           placeholder="Enter name"
@@ -177,7 +190,7 @@ const NewFactoryForm = () => {
           <Form.Label>Zip Code</Form.Label>
           <Form.Control
             onChange={(e) => setZipCode(e.target.value)}
-            value={zipCode}
+            value={`${zipCode === null ? "-" : zipCode}`}
             required
           ></Form.Control>
           <Form.Control.Feedback type="invalid">
@@ -185,21 +198,6 @@ const NewFactoryForm = () => {
           </Form.Control.Feedback>
         </Form.Group>
       </Row>
-      <div className={styles.buttons}>
-        <Button variant="info">
-          <Link to="/" className={styles.addFactory}>
-            <img
-              src={back}
-              alt="Return back"
-              style={{ width: "1rem", height: "1rem" }}
-            />
-            Return back
-          </Link>
-        </Button>
-        <Button variant="primary" type="submit" className={styles.submit}>
-          Submit
-        </Button>
-      </div>
     </Form>
   );
 };

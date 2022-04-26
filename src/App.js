@@ -1,26 +1,29 @@
 import logo from "./logo.svg";
 import "./App.css";
 import NewFactoryForm from "./components/NewFactoryForm";
-import Latlng from "react-input-latlng";
-import FactoriesList from "./components/FactoriesList";
-import SearchFactoryForm from "./components/SearchFactoryForm";
-import AddNewFactoryButton from "./components/AddNewFactoryButton";
-import { render } from "react-dom";
-import { BrowserRouter, Routes, Route, Router } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainPage from "./pages/MainPage";
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
+import reducer from "./reducer";
+
+const store = createStore(reducer, applyMiddleware(thunk));
 
 // https://my.api.mockaroo.com/smart_manufacturing.json?key=a252b490
 
 function App() {
   return (
-    <BrowserRouter>
-      <div className="app">
-        <Routes>
-          <Route exact path="/" element={<MainPage />} />
-          <Route exact path="/newFactory" element={<NewFactoryForm />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <div className="app">
+          <Routes>
+            <Route exact path="/" element={<MainPage />} />
+            <Route exact path="/newFactory" element={<NewFactoryForm />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </Provider>
   );
 }
 
