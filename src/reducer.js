@@ -20,8 +20,6 @@ function reducer(state = initialState, action) {
     return { ...state, data: [...state.data, action.payload.factory] };
   }
   if (action.type === FETCH_DATA_REQUEST) {
-    console.log("request");
-
     return {
       ...state,
       loading: true,
@@ -29,7 +27,6 @@ function reducer(state = initialState, action) {
     };
   }
   if (action.type === FETCH_DATA_SUCCESS) {
-    console.log("fetch");
     return {
       ...state,
       loading: false,
@@ -37,7 +34,6 @@ function reducer(state = initialState, action) {
     };
   }
   if (action.type === FETCH_DATA_ERROR) {
-    console.log("error");
     return {
       ...state,
       loading: false,

@@ -1,20 +1,12 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Col,
-  FloatingLabel,
-  Form,
-  FormControl,
-  InputGroup,
-  Row,
-} from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./NewFactoryForm.module.css";
-import Latlng from "react-input-latlng";
-import { Link } from "react-router-dom";
+
 import back from "../img/back.png";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../firebase-config";
+import { Link } from "react-router-dom";
 
 const NewFactoryForm = () => {
   const [validated, setValidated] = useState(false);
@@ -28,8 +20,8 @@ const NewFactoryForm = () => {
   const [city, setCity] = useState("");
   const [street, setStreet] = useState("");
   const [zipCode, setZipCode] = useState("");
-  const [latNotValid, setLatNotValid] = useState("");
-  const [longNotValid, setLongNotValid] = useState("");
+  //const [latNotValid, setLatNotValid] = useState("");
+  //const [longNotValid, setLongNotValid] = useState("");
 
   // const regexExpLat = /^((\-?|\+?)?\d+(\.\d+)?)$/gi;
   // const regexExpLong = /^((\-?|\+?)?\d+(\.\d+)?)$/gi;
@@ -38,16 +30,16 @@ const NewFactoryForm = () => {
 
   const createFactory = async () => {
     await addDoc(factoriesCollectionRef, {
-      name: name,
-      description: description,
-      latitude: latitude,
-      longitude: longitude,
-      status: status,
+      name,
+      description,
+      latitude,
+      longitude,
+      status,
       address: {
-        country: country,
-        city: city,
-        street: street,
-        zipCode: zipCode,
+        country,
+        city,
+        street,
+        zipCode,
       },
     });
   };

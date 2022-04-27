@@ -1,25 +1,18 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Col,
-  FloatingLabel,
-  Form,
-  FormControl,
-  InputGroup,
-  Row,
-} from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./NewFactoryForm.module.css";
-import Latlng from "react-input-latlng";
 import { Link, useParams } from "react-router-dom";
-import back from "../img/back.png";
 import { useSelector } from "react-redux";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase-config";
+import back from "../img/back.png";
 
 const EditFactoryForm = () => {
   const params = useParams();
   const data = useSelector((state) => state.data);
   const currentFactory = data.find((factory) => factory.id === params.id);
-  console.log(currentFactory.name);
+
   const {
     name: prevName,
     description: prevDescription,
@@ -44,11 +37,61 @@ const EditFactoryForm = () => {
   const [city, setCity] = useState(prevCity);
   const [street, setStreet] = useState(prevStreet);
   const [zipCode, setZipCode] = useState(prevZipCode);
-  const [latNotValid, setLatNotValid] = useState("");
-  const [longNotValid, setLongNotValid] = useState("");
+  //const [latNotValid, setLatNotValid] = useState("");
+  //const [longNotValid, setLongNotValid] = useState("");
 
   // const regexExpLat = /^((\-?|\+?)?\d+(\.\d+)?)$/gi;
   // const regexExpLong = /^((\-?|\+?)?\d+(\.\d+)?)$/gi;
+
+  // const createFactory = async () => {
+  //   await addDoc(factoriesCollectionRef, {
+  //     name,
+  //     description,
+  //     latitude,
+  //     longitude,
+  //     status,
+  //     address: {
+  //       country,
+  //       city,
+  //       street,
+  //       zipCode,
+  //     },
+  //   });
+  // };
+
+  const updateFactoryData = async (
+    id
+    // name,
+    // description,
+    // latitude,
+    // longitude,
+    // status,
+    // country,
+    // city,
+    // street,
+    // zipCode
+  ) => {
+    const factoryDoc = doc(db, "factories", id);
+    // const updateName = { name };
+    // const updateDescription = { description };
+    // const updateLatitude = { latitude };
+    // const updateLongitude = { longitude };
+    // const updateStatus = { status };
+    // const updateAddress = { address: { country, city, street, zipCode } };
+    await updateDoc(factoryDoc, {
+      name,
+      description,
+      latitude,
+      longitude,
+      status,
+      address: {
+        country,
+        city,
+        street,
+        zipCode,
+      },
+    });
+  };
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -59,7 +102,7 @@ const EditFactoryForm = () => {
       setValidated(true);
     }
     if (form.checkValidity() === true) {
-      console.log("send");
+      updateFactoryData(params.id);
       setName("");
       setDescription("");
       setLatitude("");
@@ -109,7 +152,6 @@ const EditFactoryForm = () => {
       <Row className="mb-3">
         <Form.Group as={Col} controlId="validationCustom03">
           <Form.Label>Latitude</Form.Label>
-
           <Form.Control
             type="number"
             required
@@ -203,6 +245,21 @@ const EditFactoryForm = () => {
           </Form.Control.Feedback>
         </Form.Group>
       </Row>
+      <div className={styles.buttons}>
+        <Button variant="info">
+          <Link to="/" className={styles.addFactory}>
+            <img
+              src={back}
+              alt="Return back"
+              style={{ width: "1rem", height: "1rem" }}
+            />
+            Return back
+          </Link>
+        </Button>
+        <Button variant="primary" type="submit" className={styles.submit}>
+          Submit
+        </Button>
+      </div>
     </Form>
   );
 };

@@ -8,7 +8,7 @@ import { fetchData } from "../fetchData";
 import { DISMISS_FACTORY_DATA, EDIT_FACTORY_DATA } from "../actionsType";
 import EditFactoryForm from "./EditFactoryForm";
 import { db } from "../firebase-config";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
 import { fetchDataSuccess } from "../actions";
 import { Link } from "react-router-dom";
 
@@ -32,25 +32,18 @@ const FactoriesList = () => {
         id: doc.id,
       }));
       dispatch(fetchDataSuccess(data));
-      //     console.log(data);
-      console.log(data);
     };
     getFactories();
-  }, []);
+  }, [factoriesCollectionRef]);
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchData());
-    console.log("fetch data");
   }, [dispatch]);
 
-  const deleteHandler = (id) => {
-    console.log(id);
-    dispatch({ type: DISMISS_FACTORY_DATA, payload: id });
-  };
-  const editHandler = (id) => {
-    console.log(id);
-    dispatch({ type: EDIT_FACTORY_DATA, payload: id });
+  const deleteHandler = async (id) => {
+    const factoryDoc = doc(db, "factories", id);
+    await deleteDoc(factoryDoc);
   };
 
   const data = useSelector((state) => state.data);
@@ -78,7 +71,6 @@ const FactoriesList = () => {
 
   //   fetchData();
   // }, []);
-  // console.log(data[0]?.id);
 
   return (
     <div>
@@ -132,7 +124,7 @@ const FactoriesList = () => {
                       variant="link"
                       href="#"
                       onClick={() => {
-                        deleteHandler(factory.id);
+                        deleteHandler(id);
                       }}
                     >
                       <img
