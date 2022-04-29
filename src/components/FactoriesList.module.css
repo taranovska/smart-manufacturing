@@ -3,3 +3,18 @@
   align-items: center;
   flex-direction: column-reverse;
 }
+
+.table td,
+.table tr {
+  text-align: center;
+  vertical-align: middle;
+}
+.addLocation {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+}
+.addTitle {
+  text-transform: uppercase;
+  margin-left: 5px;
+}

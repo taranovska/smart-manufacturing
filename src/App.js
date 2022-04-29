@@ -19,9 +19,9 @@ function App() {
       <BrowserRouter>
         <div className="app">
           <Routes>
-            <Route exact path="/" element={<MainPage />} />
             <Route exact path="/:id" element={<EditFactoryForm />} />
             <Route exact path="/newFactory" element={<NewFactoryForm />} />
+            <Route exact path="/" element={<MainPage />} />
           </Routes>
         </div>
       </BrowserRouter>

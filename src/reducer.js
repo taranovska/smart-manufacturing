@@ -7,11 +7,14 @@ import {
   FETCH_DATA_REQUEST,
   FETCH_DATA_SUCCESS,
   FETCH_DATA_ERROR,
+  SEARCH_QUERY,
+  CLEAR_SEARCH_QUERY,
 } from "./actionsType";
 
 const initialState = {
   loading: false,
   error: null,
+  query: "",
   data: [],
 };
 
@@ -26,6 +29,7 @@ function reducer(state = initialState, action) {
       error: null,
     };
   }
+
   if (action.type === FETCH_DATA_SUCCESS) {
     return {
       ...state,
@@ -37,9 +41,32 @@ function reducer(state = initialState, action) {
     return {
       ...state,
       loading: false,
-      error: action.error,
+      error: action.payload.error,
+      data: [],
     };
   }
+  if (action.type === CLEAR_SEARCH_QUERY) {
+    return {
+      ...state,
+      query: "",
+    };
+  }
+  if (action.type === SEARCH_QUERY) {
+    return {
+      ...state,
+      query: action.payload,
+    };
+  }
+
+  //     // .some(
+  //     //   (item) => item.name.includes(action.payload)
+
+  //     //item.name.includes(action.payload) === true
+
+  //     // item.name.includes(action.payload).some((el) => el === true)
+  //     // ),
+  //   };
+  // }
 
   return state;
 }

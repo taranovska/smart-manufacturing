@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./NewFactoryForm.module.css";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase-config";
@@ -37,6 +37,7 @@ const EditFactoryForm = () => {
   const [city, setCity] = useState(prevCity);
   const [street, setStreet] = useState(prevStreet);
   const [zipCode, setZipCode] = useState(prevZipCode);
+  const [query, setQuery] = useState("");
   //const [latNotValid, setLatNotValid] = useState("");
   //const [longNotValid, setLongNotValid] = useState("");
 
@@ -58,6 +59,7 @@ const EditFactoryForm = () => {
   //     },
   //   });
   // };
+  let history = useNavigate();
 
   const updateFactoryData = async (
     id
@@ -91,6 +93,7 @@ const EditFactoryForm = () => {
         zipCode,
       },
     });
+    console.log("edit factory firebase")
   };
 
   const handleSubmit = (event) => {
@@ -100,6 +103,7 @@ const EditFactoryForm = () => {
       event.preventDefault();
       event.stopPropagation();
       setValidated(true);
+      console.log("not validated form edit")
     }
     if (form.checkValidity() === true) {
       updateFactoryData(params.id);
@@ -113,6 +117,10 @@ const EditFactoryForm = () => {
       setStreet("");
       setZipCode("");
       setValidated(false);
+      setTimeout(() => {
+        history("/");
+      }, 1000);
+      console.log("validated form edit")
     }
   };
 

@@ -7,6 +7,7 @@ import back from "../img/back.png";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../firebase-config";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const NewFactoryForm = () => {
   const [validated, setValidated] = useState(false);
@@ -27,6 +28,7 @@ const NewFactoryForm = () => {
   // const regexExpLong = /^((\-?|\+?)?\d+(\.\d+)?)$/gi;
 
   const factoriesCollectionRef = collection(db, "factories");
+  let history = useNavigate();
 
   const createFactory = async () => {
     await addDoc(factoriesCollectionRef, {
@@ -42,6 +44,7 @@ const NewFactoryForm = () => {
         zipCode,
       },
     });
+    console.log("create factory firebase");
   };
 
   const handleSubmit = (event) => {
@@ -51,6 +54,7 @@ const NewFactoryForm = () => {
       event.preventDefault();
       event.stopPropagation();
       setValidated(true);
+      console.log("dont validate new factory form")
     }
     if (form.checkValidity() === true) {
       createFactory();
@@ -64,6 +68,10 @@ const NewFactoryForm = () => {
       setStreet("");
       setZipCode("");
       setValidated(false);
+      setTimeout(() => {
+        history("/");
+      }, 1000);
+      console.log("validate new factory form")
     }
   };
 
