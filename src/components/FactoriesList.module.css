@@ -17,4 +17,18 @@
 .addTitle {
   text-transform: uppercase;
   margin-left: 5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: white;
+}
+.addLocationWrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.addTitle::link,
+.addTitle::visited,
+.addTitle::hover,
+.addTitle::active {
+  text-decoration: none;
 }

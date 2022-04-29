@@ -9,3 +9,7 @@
 .addFactory::active {
   text-decoration: none;
 }
+.wrapper {
+  display: flex;
+  justify-content: center;
+}

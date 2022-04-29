@@ -37,12 +37,7 @@ const NewFactoryForm = () => {
       latitude,
       longitude,
       status,
-      address: {
-        country,
-        city,
-        street,
-        zipCode,
-      },
+      address: [{ country, city, street, zipCode }],
     });
     console.log("create factory firebase");
   };
@@ -54,7 +49,7 @@ const NewFactoryForm = () => {
       event.preventDefault();
       event.stopPropagation();
       setValidated(true);
-      console.log("dont validate new factory form")
+      console.log("dont validate new factory form");
     }
     if (form.checkValidity() === true) {
       createFactory();
@@ -71,156 +66,159 @@ const NewFactoryForm = () => {
       setTimeout(() => {
         history("/");
       }, 1000);
-      console.log("validate new factory form")
+      console.log("validate new factory form");
     }
   };
 
   return (
-    <Form
-      className={styles.formNewFactory}
-      noValidate
-      validated={validated}
-      onSubmit={handleSubmit}
-    >
-      <Form.Group className="mb-3" controlId="validationCustom01">
-        <Form.Label>Name</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Enter name"
-          onChange={(e) => setName(e.target.value)}
-          value={name}
-          required
-        />
-        <Form.Control.Feedback type="invalid">
-          Please provide a valid name.
-        </Form.Control.Feedback>
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="validationCustom02">
-        <Form.Label>Description</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Description..."
-          onChange={(e) => setDescription(e.target.value)}
-          value={description}
-          required
-        />
-        <Form.Control.Feedback type="invalid">
-          Please add description.
-        </Form.Control.Feedback>
-      </Form.Group>
-      <Row className="mb-3">
-        <Form.Group as={Col} controlId="validationCustom03">
-          <Form.Label>Latitude</Form.Label>
-
+    <>
+      <h1 className={styles.title}>Create new factory data</h1>
+      <Form
+        className={styles.formNewFactory}
+        noValidate
+        validated={validated}
+        onSubmit={handleSubmit}
+      >
+        <Form.Group className="mb-3" controlId="validationCustom01">
+          <Form.Label>Name</Form.Label>
           <Form.Control
-            type="number"
+            type="text"
+            placeholder="Enter name"
+            onChange={(e) => setName(e.target.value)}
+            value={name}
             required
-            onChange={(e) => {
-              setLatitude(e.target.value);
-            }}
-            value={latitude}
-          />
-
-          <Form.Control.Feedback type="invalid">
-            Please provide latitude.
-          </Form.Control.Feedback>
-        </Form.Group>
-        <Form.Group as={Col} controlId="validationCustom04">
-          <Form.Label>Longitude</Form.Label>
-          <Form.Control
-            type="number"
-            required
-            onChange={(e) => {
-              setLongitude(e.target.value);
-            }}
-            value={longitude}
           />
           <Form.Control.Feedback type="invalid">
-            Please provide longitude.
+            Please provide a valid name.
           </Form.Control.Feedback>
         </Form.Group>
-      </Row>
-      <Form.Group className="mb-3" controlId="validationCustom05">
-        <Form.Label>Status</Form.Label>
-        <Form.Select
-          aria-label="Select status"
-          onChange={(e) => setStatus(e.target.value)}
-          value={status}
-          required
-        >
-          <option value="operative">Operative</option>
-          <option value="idle">Idle</option>
-          <option value="dismissed">Dismissed</option>
-        </Form.Select>
-        <Form.Control.Feedback type="invalid">
-          Please select a status.
-        </Form.Control.Feedback>
-      </Form.Group>
-      <Row className="mb-3">
-        <Form.Group as={Col} controlId="formGridCountry">
-          <Form.Label>Country</Form.Label>
+        <Form.Group className="mb-3" controlId="validationCustom02">
+          <Form.Label>Description</Form.Label>
           <Form.Control
-            onChange={(e) => setCountry(e.target.value)}
-            value={country}
+            type="text"
+            placeholder="Description..."
+            onChange={(e) => setDescription(e.target.value)}
+            value={description}
             required
-          ></Form.Control>
+          />
           <Form.Control.Feedback type="invalid">
-            Please provide country.
+            Please add description.
           </Form.Control.Feedback>
         </Form.Group>
+        <Row className="mb-3">
+          <Form.Group as={Col} controlId="validationCustom03">
+            <Form.Label>Latitude</Form.Label>
 
-        <Form.Group as={Col} controlId="formGridCity">
-          <Form.Label>City</Form.Label>
-          <Form.Control
-            onChange={(e) => setCity(e.target.value)}
-            value={city}
-            required
-          ></Form.Control>
-          <Form.Control.Feedback type="invalid">
-            Please provide city.
-          </Form.Control.Feedback>
-        </Form.Group>
-
-        <Form.Group as={Col} controlId="formGridStreet">
-          <Form.Label>Street</Form.Label>
-          <Form.Control
-            onChange={(e) => setStreet(e.target.value)}
-            value={street}
-            required
-          ></Form.Control>
-          <Form.Control.Feedback type="invalid">
-            Please provide street.
-          </Form.Control.Feedback>
-        </Form.Group>
-
-        <Form.Group as={Col} controlId="formGridZip">
-          <Form.Label>Zip Code</Form.Label>
-          <Form.Control
-            onChange={(e) => setZipCode(e.target.value)}
-            value={zipCode}
-            required
-          ></Form.Control>
-          <Form.Control.Feedback type="invalid">
-            Please provide zip code.
-          </Form.Control.Feedback>
-        </Form.Group>
-      </Row>
-      <div className={styles.buttons}>
-        <Button variant="info">
-          <Link to="/" className={styles.addFactory}>
-            <img
-              src={back}
-              alt="Return back"
-              style={{ width: "1rem", height: "1rem" }}
+            <Form.Control
+              type="number"
+              required
+              onChange={(e) => {
+                setLatitude(e.target.value);
+              }}
+              value={latitude}
             />
-            Return back
-          </Link>
-        </Button>
-        <Button variant="primary" type="submit" className={styles.submit}>
-          Submit
-        </Button>
-      </div>
-    </Form>
+
+            <Form.Control.Feedback type="invalid">
+              Please provide latitude.
+            </Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group as={Col} controlId="validationCustom04">
+            <Form.Label>Longitude</Form.Label>
+            <Form.Control
+              type="number"
+              required
+              onChange={(e) => {
+                setLongitude(e.target.value);
+              }}
+              value={longitude}
+            />
+            <Form.Control.Feedback type="invalid">
+              Please provide longitude.
+            </Form.Control.Feedback>
+          </Form.Group>
+        </Row>
+        <Form.Group className="mb-3" controlId="validationCustom05">
+          <Form.Label>Status</Form.Label>
+          <Form.Select
+            aria-label="Select status"
+            onChange={(e) => setStatus(e.target.value)}
+            value={status}
+            required
+          >
+            <option value="operative">Operative</option>
+            <option value="idle">Idle</option>
+            <option value="dismissed">Dismissed</option>
+          </Form.Select>
+          <Form.Control.Feedback type="invalid">
+            Please select a status.
+          </Form.Control.Feedback>
+        </Form.Group>
+        <Row className="mb-3">
+          <Form.Group as={Col} controlId="formGridCountry">
+            <Form.Label>Country</Form.Label>
+            <Form.Control
+              onChange={(e) => setCountry(e.target.value)}
+              value={country}
+              required
+            ></Form.Control>
+            <Form.Control.Feedback type="invalid">
+              Please provide country.
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group as={Col} controlId="formGridCity">
+            <Form.Label>City</Form.Label>
+            <Form.Control
+              onChange={(e) => setCity(e.target.value)}
+              value={city}
+              required
+            ></Form.Control>
+            <Form.Control.Feedback type="invalid">
+              Please provide city.
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group as={Col} controlId="formGridStreet">
+            <Form.Label>Street</Form.Label>
+            <Form.Control
+              onChange={(e) => setStreet(e.target.value)}
+              value={street}
+              required
+            ></Form.Control>
+            <Form.Control.Feedback type="invalid">
+              Please provide street.
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group as={Col} controlId="formGridZip">
+            <Form.Label>Zip Code</Form.Label>
+            <Form.Control
+              onChange={(e) => setZipCode(e.target.value)}
+              value={zipCode}
+              required
+            ></Form.Control>
+            <Form.Control.Feedback type="invalid">
+              Please provide zip code.
+            </Form.Control.Feedback>
+          </Form.Group>
+        </Row>
+        <div className={styles.buttons}>
+          <Button variant="info">
+            <Link to="/" className={styles.addFactory}>
+              <img
+                src={back}
+                alt="Return back"
+                style={{ width: "1rem", height: "1rem" }}
+              />
+              Return back
+            </Link>
+          </Button>
+          <Button variant="primary" type="submit" className={styles.submit}>
+            Submit
+          </Button>
+        </div>
+      </Form>
+    </>
   );
 };
 

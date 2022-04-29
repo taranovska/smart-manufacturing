@@ -8,6 +8,7 @@ import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import reducer from "./reducer";
 import EditFactoryForm from "./components/EditFactoryForm";
+import NewLocationForm from "./components/NewLocationForm";
 
 const store = createStore(reducer, applyMiddleware(thunk));
 
@@ -21,6 +22,11 @@ function App() {
           <Routes>
             <Route exact path="/:id" element={<EditFactoryForm />} />
             <Route exact path="/newFactory" element={<NewFactoryForm />} />
+            <Route
+              exact
+              path="/newLocation/:id"
+              element={<NewLocationForm />}
+            />
             <Route exact path="/" element={<MainPage />} />
           </Routes>
         </div>
