@@ -2,6 +2,7 @@ import React from "react";
 import { Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { CLEAR_SEARCH_QUERY, SEARCH_QUERY } from "../actionsType";
+import styles from "./SearchFactoryForm";
 
 const SearchFactoryForm = () => {
   const loading = useSelector((state) => state.loading);
@@ -20,7 +21,9 @@ const SearchFactoryForm = () => {
           }}
         >
           <Form.Group className="mb-3" controlId="formBasicName">
-            <Form.Label>Search factory:</Form.Label>
+            <Form.Label>
+              <div className={styles.title}>search factory:</div>
+            </Form.Label>
             <Form.Control type="text" placeholder="Enter factory name" />
           </Form.Group>
         </Form>

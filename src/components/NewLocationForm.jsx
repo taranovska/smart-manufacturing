@@ -1,20 +1,19 @@
 import React, { useState } from "react";
-import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./NewFactoryForm.module.css";
-
-import back from "../img/back.png";
+import BtnBack from "./BtnBack";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase-config";
-import { Link, useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import SpinnerCust from "./SpinnerCust";
 
 const NewLocationForm = () => {
   const params = useParams();
   const data = useSelector((state) => state.data);
   const currentFactory = data.find((factory) => factory.id === params.id);
-  console.log(currentFactory.address);
 
   const [validated, setValidated] = useState(false);
   const [sending, setSending] = useState(false);
@@ -60,39 +59,19 @@ const NewLocationForm = () => {
       console.log("dont validate add new address");
     }
     if (form.checkValidity() === true) {
-      //   createFactory();
-      //   setName("");
-      //   setDescription("");
-      //   setLatitude("");
-      //   setLongitude("");
-      //   setStatus("operative");
-      //   setCountry("");
-      //   setCity("");
-      //   setStreet("");
-      //   setZipCode("");
       setValidated(false);
       setSending(true);
       setTimeout(() => {
         history("/");
       }, 1000);
       addNewAddress(params.id);
-      // console.log([
-      //   ...currentFactory.address,
-      //   { newCountry, newCity, newStreet, newZipCode },
-      // ]);
       console.log("validate new address");
     }
   };
 
   return (
     <>
-      {sending && (
-        <div className={styles.spinner}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </Spinner>
-        </div>
-      )}
+      {sending && <SpinnerCust />}
       {!sending && (
         <>
           <h1 className={styles.title}>
@@ -153,16 +132,7 @@ const NewLocationForm = () => {
             </Form.Group>
 
             <div className={styles.buttons}>
-              <Button variant="info">
-                <Link to="/" className={styles.addFactory}>
-                  <img
-                    src={back}
-                    alt="Return back"
-                    style={{ width: "1rem", height: "1rem" }}
-                  />
-                  Return back
-                </Link>
-              </Button>
+              <BtnBack />
               <Button variant="primary" type="submit" className={styles.submit}>
                 Submit
               </Button>

@@ -6,11 +6,11 @@ import styles from "./AddNewFactoryButton.module.css";
 const AddNewFactoryButton = () => {
   return (
     <div className={styles.wrapper}>
-      <Button variant="primary">
-        <Link to="/newFactory" className={styles.addFactory}>
+      <Link to="/newFactory" className={styles.addFactory}>
+        <Button variant="primary" className={styles.title}>
           Add new factory
-        </Link>
-      </Button>
+        </Button>
+      </Link>
     </div>
   );
 };

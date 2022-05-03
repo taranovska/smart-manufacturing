@@ -1,8 +1,3 @@
-.addFactory {
-  text-transform: uppercase;
-  text-decoration: none;
-  color: white;
-}
 .buttons {
   display: flex;
   justify-content: space-between;
@@ -12,10 +7,4 @@
 }
 .title {
   text-align: center;
-}
-.spinner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column-reverse;
 }

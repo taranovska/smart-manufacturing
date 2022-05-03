@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Button, Col, Form, Modal, Row, Spinner, Table } from "react-bootstrap";
+import React, { useEffect } from "react";
+import { Button, Table } from "react-bootstrap";
 import styles from "./FactoriesList.module.css";
 import edit from "../img/edit.png";
 import remove from "../img/remove.png";
@@ -15,10 +15,13 @@ import {
 } from "firebase/firestore";
 import { fetchDataError, fetchDataRequest, fetchDataSuccess } from "../actions";
 import { Link } from "react-router-dom";
-import NewLocationForm from "./NewLocationForm";
+import SpinnerCust from "./SpinnerCust";
+import {
+  DISMISS_FACTORY_DATA,
+  DEACTIVATE_EXISTING_LOCATION,
+} from "../actionsType";
 
 const FactoriesList = () => {
-  //const [query, setQuery] = "";
   const headers = [
     "#",
     "name",
@@ -26,33 +29,29 @@ const FactoriesList = () => {
     "latitude / longitude",
     "status",
     "address",
+    "edit",
+    "delete",
   ];
 
   const factoriesCollectionRef = collection(db, "factories");
 
-  const [updateAddress, setUpdatedAddress] = useState("");
-
   const updateFactoryLocation = async (id, updateAddress) => {
     const factoryDoc = doc(db, "factories", id);
-    // const updateName = { name };
-    // const updateDescription = { description };
-    // const updateLatitude = { latitude };
-    // const updateLongitude = { longitude };
-    // const updateStatus = { status };
-    // const updateAddress = { address: { country, city, street, zipCode } };
+
     await updateDoc(factoryDoc, {
       address: [...updateAddress],
     });
-    console.log("edit factory firebase");
+    console.log("edit factory address firebase");
   };
 
   const deleteLocation = (id, index, address, item) => {
-    console.log(id, index, address, item);
     const updateAddress = address.filter((obj) => obj !== item);
-    console.log(address, updateAddress);
-    //setUpdatedAddress(updateAddress);
+    console.log(id, index, address, item);
     updateFactoryLocation(id, updateAddress);
-    //console.log(address);
+    dispatch({
+      type: DEACTIVATE_EXISTING_LOCATION,
+      payload: { id, updateAddress, index, item },
+    });
   };
 
   const getFactories = async () => {
@@ -73,59 +72,27 @@ const FactoriesList = () => {
     }
   };
 
-  useEffect(() => {
-    getFactories();
-  }, []);
-
   const dispatch = useDispatch();
 
   const deleteHandler = async (id) => {
     const factoryDoc = doc(db, "factories", id);
     await deleteDoc(factoryDoc);
-    getFactories();
+
     console.log("delete data from firebase");
+    dispatch({ type: DISMISS_FACTORY_DATA, payload: id });
   };
 
   const data = useSelector((state) => state.data);
   const error = useSelector((state) => state.error);
-
   const query = useSelector((state) => state.query);
-  //setQuery(queryRedux);
-
   const loading = useSelector((state) => state.loading);
 
-  //const { error } = useSelector((state) => state.error);
-
-  //const [loading, setLoading] = useState(true);
-  //const [data, setData] = useState([]);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     // setLoading(true);
-  //     try {
-  //       const { data: response } = await axios.get(
-  //         "https://my.api.mockaroo.com/smart_manufacturing.json?key=a252b490"
-  //       );
-  //       setData(response);
-  //     } catch (error) {
-  //       console.error(error.message);
-  //     }
-  //     setLoading(false);
-  //   };
-
-  //   fetchData();
-  // }, []);
-
+  useEffect(() => {
+    getFactories();
+  }, []);
   return (
     <div>
-      {loading && (
-        <div className={styles.spinner}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </Spinner>
-        </div>
-      )}
-
+      {loading && <SpinnerCust />}
       {data.length > 0 && !loading && (
         <Table
           striped
@@ -140,8 +107,6 @@ const FactoriesList = () => {
               {headers.map((header, index) => (
                 <th key={index}>{header.toUpperCase()}</th>
               ))}
-              <th></th>
-              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -160,10 +125,10 @@ const FactoriesList = () => {
                 const { id, name, description, latitude, longitude, status } =
                   factory;
                 const { address } = factory;
-                console.log(address);
+
                 return (
                   <tr key={id}>
-                    <td>{index + 1}</td>
+                    <td className={styles.centered}>{index + 1}</td>
                     <td>{name}</td>
                     <td>{description}</td>
                     <td key={id}>{`${latitude} / ${longitude}`}</td>
@@ -171,10 +136,13 @@ const FactoriesList = () => {
                     <td>
                       {address.map((item, index) => {
                         return (
-                          <div key={index}>
-                            {`${item.country}, ${item.city}, ${item.street}, ${
+                          <div key={index} className={styles.addressWrapper}>
+                            <div className={styles.address}>{`${
+                              item.country
+                            }, ${item.city}, ${item.street}, ${
                               item.zipCode === null ? "-" : item.zipCode
-                            }`}
+                            }`}</div>
+
                             {address.length > 1 && (
                               <Button
                                 variant="link"
@@ -185,7 +153,7 @@ const FactoriesList = () => {
                                 <img
                                   src={remove}
                                   alt="Dismiss"
-                                  style={{ width: "1rem", height: "1rem" }}
+                                  style={{ width: "0.8rem", height: "0.8rem" }}
                                 />
                               </Button>
                             )}
@@ -194,7 +162,10 @@ const FactoriesList = () => {
                       })}
 
                       <div className={styles.addLocationWrapper}>
-                        <Button variant="primary">
+                        <Button
+                          variant="primary"
+                          className={styles.btnAddLocation}
+                        >
                           <Link
                             to={`/newLocation/${id}`}
                             className={styles.addLocation}
@@ -202,7 +173,7 @@ const FactoriesList = () => {
                             <img
                               src={add}
                               alt="add location"
-                              style={{ width: "1rem", height: "1rem" }}
+                              style={{ width: "0.9rem", height: "0.9rem" }}
                             ></img>
                             <div className={styles.addTitle}>add location</div>
                           </Link>
@@ -210,19 +181,19 @@ const FactoriesList = () => {
                       </div>
                     </td>
 
-                    <td>
-                      <Button variant="info">
-                        <Link to={`/${id}`}>
+                    <td className={styles.centered}>
+                      <Link to={`/${id}`}>
+                        <Button variant="info">
                           <img
                             src={edit}
                             alt="Details"
                             style={{ width: "1rem", height: "1rem" }}
                           />
-                        </Link>
-                      </Button>
+                        </Button>{" "}
+                      </Link>
                     </td>
 
-                    <td>
+                    <td className={styles.centered}>
                       <Button
                         variant="link"
                         onClick={() => {
@@ -242,8 +213,9 @@ const FactoriesList = () => {
           </tbody>
         </Table>
       )}
-
-      {error && <div>{error.name}</div>}
+      {error && (
+        <div>Can't get data from Firebase. Try to create new factory.</div>
+      )}
     </div>
   );
 };

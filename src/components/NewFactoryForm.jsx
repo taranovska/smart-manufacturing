@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./NewFactoryForm.module.css";
-
-import back from "../img/back.png";
+import { nanoid } from "nanoid";
+import BtnBack from "./BtnBack";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../firebase-config";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { CREATE_FACTORY_DATA } from "../actionsType";
 
 const NewFactoryForm = () => {
   const [validated, setValidated] = useState(false);
-
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [latitude, setLatitude] = useState("");
@@ -24,9 +24,9 @@ const NewFactoryForm = () => {
   //const [latNotValid, setLatNotValid] = useState("");
   //const [longNotValid, setLongNotValid] = useState("");
 
-  // const regexExpLat = /^((\-?|\+?)?\d+(\.\d+)?)$/gi;
+  // const regexExpLat = ^-?[0-9]{1,3}(?:\.[0-9]{1,10})?$/gi;
   // const regexExpLong = /^((\-?|\+?)?\d+(\.\d+)?)$/gi;
-
+  const dispatch = useDispatch();
   const factoriesCollectionRef = collection(db, "factories");
   let history = useNavigate();
 
@@ -53,6 +53,18 @@ const NewFactoryForm = () => {
     }
     if (form.checkValidity() === true) {
       createFactory();
+      dispatch({
+        type: CREATE_FACTORY_DATA,
+        payload: {
+          name,
+          id: nanoid(12),
+          description,
+          latitude,
+          longitude,
+          status,
+          address: [{ country, city, street, zipCode }],
+        },
+      });
       setName("");
       setDescription("");
       setLatitude("");
@@ -145,9 +157,9 @@ const NewFactoryForm = () => {
             value={status}
             required
           >
-            <option value="operative">Operative</option>
-            <option value="idle">Idle</option>
-            <option value="dismissed">Dismissed</option>
+            <option value="operative">operative</option>
+            <option value="idle">idle</option>
+            <option value="dismissed">dismissed</option>
           </Form.Select>
           <Form.Control.Feedback type="invalid">
             Please select a status.
@@ -203,16 +215,7 @@ const NewFactoryForm = () => {
           </Form.Group>
         </Row>
         <div className={styles.buttons}>
-          <Button variant="info">
-            <Link to="/" className={styles.addFactory}>
-              <img
-                src={back}
-                alt="Return back"
-                style={{ width: "1rem", height: "1rem" }}
-              />
-              Return back
-            </Link>
-          </Button>
+          <BtnBack />
           <Button variant="primary" type="submit" className={styles.submit}>
             Submit
           </Button>

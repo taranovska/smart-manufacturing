@@ -6,8 +6,9 @@ import SearchFactoryForm from "../components/SearchFactoryForm";
 const MainPage = () => {
   return (
     <>
+      <AddNewFactoryButton />
       <SearchFactoryForm />
-      <FactoriesList /> <AddNewFactoryButton />
+      <FactoriesList />
     </>
   );
 };

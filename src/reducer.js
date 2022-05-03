@@ -37,6 +37,32 @@ function reducer(state = initialState, action) {
       data: action.payload,
     };
   }
+  if (action.type === EDIT_FACTORY_DATA) {
+    const newData = JSON.parse(JSON.stringify(state.data));
+    const updatedEl = (newData[action.payload.id] =
+      action.payload.updatedFactoryObj);
+    return {
+      ...state,
+      data: newData,
+    };
+  }
+  if (action.type === DISMISS_FACTORY_DATA) {
+    return {
+      ...state,
+      data: state.data.filter((el) => el.id !== action.payload),
+    };
+  }
+  if (action.type === DEACTIVATE_EXISTING_LOCATION) {
+    const newData = JSON.parse(JSON.stringify(state.data));
+    const updatedEl = newData.find((el) => el.id === action.payload.id);
+    updatedEl.address = action.payload.updateAddress;
+
+    return {
+      ...state,
+      data: newData,
+    };
+  }
+
   if (action.type === FETCH_DATA_ERROR) {
     return {
       ...state,
@@ -57,16 +83,6 @@ function reducer(state = initialState, action) {
       query: action.payload,
     };
   }
-
-  //     // .some(
-  //     //   (item) => item.name.includes(action.payload)
-
-  //     //item.name.includes(action.payload) === true
-
-  //     // item.name.includes(action.payload).some((el) => el === true)
-  //     // ),
-  //   };
-  // }
 
   return state;
 }

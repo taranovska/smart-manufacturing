@@ -1,12 +1,10 @@
-.spinner {
-  display: flex;
-  align-items: center;
-  flex-direction: column-reverse;
-}
-
-.table td,
-.table tr {
+.table tr,
+.table td.centered {
   text-align: center;
+  vertical-align: middle;
+}
+.table td {
+  text-align: left;
   vertical-align: middle;
 }
 .addLocation {
@@ -26,9 +24,24 @@
   justify-content: center;
 }
 
-.addTitle::link,
-.addTitle::visited,
-.addTitle::hover,
-.addTitle::active {
+a.addLocation:link,
+a.addLocation,
+a.addLocation:visited,
+a.addLocation:hover,
+a.addLocation:active {
   text-decoration: none;
+}
+.addressWrapper {
+  display: flex;
+  align-items: center;
+  align-content: flex-end;
+  justify-content: center;
+}
+.address {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.btnAddLocation {
+  margin: 10px 0;
 }

@@ -3,16 +3,19 @@ import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./NewFactoryForm.module.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase-config";
-import back from "../img/back.png";
+
+import { EDIT_FACTORY_DATA } from "../actionsType";
+import SpinnerCust from "./SpinnerCust";
+import BtnBack from "./BtnBack";
 
 const EditFactoryForm = () => {
   const params = useParams();
   const data = useSelector((state) => state.data);
   const currentFactory = data.find((factory) => factory.id === params.id);
-
+  const dispatch = useDispatch();
   const {
     name: prevName,
     description: prevDescription,
@@ -20,12 +23,7 @@ const EditFactoryForm = () => {
     longitude: prevLongitude,
     status: prevStatus,
   } = currentFactory;
-  // const {
-  //   country: prevCountry,
-  //   city: prevCity,
-  //   street: prevStreet,
-  //   zipCode: prevZipCode,
-  // } = currentFactory.address;
+
   const { address: prevAddress } = currentFactory;
 
   const [validated, setValidated] = useState(false);
@@ -37,53 +35,18 @@ const EditFactoryForm = () => {
   const [address, setAddress] = useState(prevAddress);
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState(prevStatus);
-  // const [country, setCountry] = useState(prevCountry);
-  // const [city, setCity] = useState(prevCity);
-  // const [street, setStreet] = useState(prevStreet);
-  // const [zipCode, setZipCode] = useState(prevZipCode);
-  const [query, setQuery] = useState("");
+
   //const [latNotValid, setLatNotValid] = useState("");
   //const [longNotValid, setLongNotValid] = useState("");
 
   // const regexExpLat = /^((\-?|\+?)?\d+(\.\d+)?)$/gi;
   // const regexExpLong = /^((\-?|\+?)?\d+(\.\d+)?)$/gi;
 
-  // const createFactory = async () => {
-  //   await addDoc(factoriesCollectionRef, {
-  //     name,
-  //     description,
-  //     latitude,
-  //     longitude,
-  //     status,
-  //     address: {
-  //       country,
-  //       city,
-  //       street,
-  //       zipCode,
-  //     },
-  //   });
-  // };
   let history = useNavigate();
 
-  const updateFactoryData = async (
-    id
-    // name,
-    // description,
-    // latitude,
-    // longitude,
-    // status,
-    // country,
-    // city,
-    // street,
-    // zipCode
-  ) => {
+  const updateFactoryData = async (id) => {
     const factoryDoc = doc(db, "factories", id);
-    // const updateName = { name };
-    // const updateDescription = { description };
-    // const updateLatitude = { latitude };
-    // const updateLongitude = { longitude };
-    // const updateStatus = { status };
-    // const updateAddress = { address: { country, city, street, zipCode } };
+
     await updateDoc(factoryDoc, {
       name,
       description,
@@ -107,20 +70,20 @@ const EditFactoryForm = () => {
     }
     if (form.checkValidity() === true) {
       updateFactoryData(params.id);
-      // setName("");
-      // setDescription("");
-      // setLatitude("");
-      // setLongitude("");
-      // setStatus("operative");
-      // const clearAddress = [
-      //   ...address.map((item) => {
-      //     for (const key in item) {
-      //       console.log((item[key] = ""));
-      //     }
-      //   }),
-      // ];
-
-      //setAddress([...address.map((item) => console.log(item))]);
+      dispatch({
+        type: EDIT_FACTORY_DATA,
+        payload: {
+          id: params.id,
+          updatedFactoryObj: {
+            name,
+            description,
+            latitude,
+            longitude,
+            status,
+            address: [...address],
+          },
+        },
+      });
       setValidated(false);
       setSending(true);
       setTimeout(() => {
@@ -130,22 +93,9 @@ const EditFactoryForm = () => {
     }
   };
 
-  // const updateAddress = (e, field, index) => {
-  //   const newAddress = [...address];
-  //   console.log(newAddress);
-  //   newAddress[index].field = e.target.value;
-  //   setAddress(newAddress);
-  // };
-
   return (
     <>
-      {sending && (
-        <div className={styles.spinner}>
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </Spinner>
-        </div>
-      )}
+      {sending && <SpinnerCust />}
       {!sending && (
         <Form
           className={styles.formNewFactory}
@@ -218,9 +168,9 @@ const EditFactoryForm = () => {
               value={status}
               required
             >
-              <option value="operative">Operative</option>
-              <option value="idle">Idle</option>
-              <option value="dismissed">Dismissed</option>
+              <option value="operative">operative</option>
+              <option value="idle">idle</option>
+              <option value="dismissed">dismissed</option>
             </Form.Select>
             <Form.Control.Feedback type="invalid">
               Please select a status.
@@ -296,16 +246,7 @@ const EditFactoryForm = () => {
           })}
 
           <div className={styles.buttons}>
-            <Button variant="info">
-              <Link to="/" className={styles.addFactory}>
-                <img
-                  src={back}
-                  alt="Return back"
-                  style={{ width: "1rem", height: "1rem" }}
-                />
-                Return back
-              </Link>
-            </Button>
+            <BtnBack />
             <Button variant="primary" type="submit" className={styles.submit}>
               Submit
             </Button>

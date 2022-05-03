@@ -1,4 +1,5 @@
 .addFactory {
+  text-transform: uppercase;
   text-decoration: none;
   color: white;
 }
@@ -10,10 +11,7 @@ a.addFactory:active {
   text-decoration: none;
   color: white;
 }
-.wrapper {
+.flex {
   display: flex;
-  justify-content: center;
-}
-.title {
-  text-transform: uppercase;
+  align-items: center;
 }
