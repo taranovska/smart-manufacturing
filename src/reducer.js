@@ -39,8 +39,14 @@ function reducer(state = initialState, action) {
   }
   if (action.type === EDIT_FACTORY_DATA) {
     const newData = JSON.parse(JSON.stringify(state.data));
-    const updatedEl = (newData[action.payload.id] =
-      action.payload.updatedFactoryObj);
+    let updatedEl = JSON.parse(
+      JSON.stringify(newData.find((el) => el.id === action.payload.id))
+    );
+    updatedEl = action.payload.updatedFactoryObj;
+    console.log(action.payload);
+    console.log(updatedEl);
+    console.log("edit data");
+
     return {
       ...state,
       data: newData,

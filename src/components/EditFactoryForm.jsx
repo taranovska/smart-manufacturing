@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./NewFactoryForm.module.css";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase-config";
@@ -15,7 +15,7 @@ const EditFactoryForm = () => {
   const params = useParams();
   const data = useSelector((state) => state.data);
   const currentFactory = data.find((factory) => factory.id === params.id);
-  const dispatch = useDispatch();
+
   const {
     name: prevName,
     description: prevDescription,
@@ -23,26 +23,24 @@ const EditFactoryForm = () => {
     longitude: prevLongitude,
     status: prevStatus,
   } = currentFactory;
-
   const { address: prevAddress } = currentFactory;
+  const dispatch = useDispatch();
 
   const [validated, setValidated] = useState(false);
 
+  const [sending, setSending] = useState(false);
+  const [latValid, setLatValid] = useState(true);
+  const [longValid, setLongValid] = useState(true);
   const [name, setName] = useState(prevName);
   const [description, setDescription] = useState(prevDescription);
   const [latitude, setLatitude] = useState(prevLatitude);
   const [longitude, setLongitude] = useState(prevLongitude);
   const [address, setAddress] = useState(prevAddress);
-  const [sending, setSending] = useState(false);
+
   const [status, setStatus] = useState(prevStatus);
 
-  //const [latNotValid, setLatNotValid] = useState("");
-  //const [longNotValid, setLongNotValid] = useState("");
-
-  // const regexExpLat = /^((\-?|\+?)?\d+(\.\d+)?)$/gi;
-  // const regexExpLong = /^((\-?|\+?)?\d+(\.\d+)?)$/gi;
-
   let history = useNavigate();
+  const regexExt = /^(-?[0-9]{1,2}(?:\.[0-9]{1,10})?)$/gi;
 
   const updateFactoryData = async (id) => {
     const factoryDoc = doc(db, "factories", id);
@@ -69,7 +67,6 @@ const EditFactoryForm = () => {
       console.log("not validated form edit");
     }
     if (form.checkValidity() === true) {
-      updateFactoryData(params.id);
       dispatch({
         type: EDIT_FACTORY_DATA,
         payload: {
@@ -84,6 +81,7 @@ const EditFactoryForm = () => {
           },
         },
       });
+      updateFactoryData(params.id);
       setValidated(false);
       setSending(true);
       setTimeout(() => {
@@ -178,7 +176,7 @@ const EditFactoryForm = () => {
           </Form.Group>
 
           {address.map((item, index) => {
-            const newAddress = [...address];
+            const newAddress = JSON.parse(JSON.stringify(address));
             const { country, city, street, zipCode } = item;
             return (
               <Row className="mb-3" key={index}>

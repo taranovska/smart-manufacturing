@@ -82,14 +82,12 @@ const FactoriesList = () => {
     dispatch({ type: DISMISS_FACTORY_DATA, payload: id });
   };
 
-  const data = useSelector((state) => state.data);
-  const error = useSelector((state) => state.error);
-  const query = useSelector((state) => state.query);
-  const loading = useSelector((state) => state.loading);
+  const { data, error, query, loading } = useSelector((state) => state);
 
   useEffect(() => {
     getFactories();
   }, []);
+
   return (
     <div>
       {loading && <SpinnerCust />}
@@ -131,7 +129,7 @@ const FactoriesList = () => {
                     <td className={styles.centered}>{index + 1}</td>
                     <td>{name}</td>
                     <td>{description}</td>
-                    <td key={id}>{`${latitude} / ${longitude}`}</td>
+                    <td>{`${latitude} / ${longitude}`}</td>
                     <td>{status}</td>
                     <td>
                       {address.map((item, index) => {
@@ -153,14 +151,16 @@ const FactoriesList = () => {
                                 <img
                                   src={remove}
                                   alt="Dismiss"
-                                  style={{ width: "0.8rem", height: "0.8rem" }}
+                                  style={{
+                                    width: "0.8rem",
+                                    height: "0.8rem",
+                                  }}
                                 />
                               </Button>
                             )}
                           </div>
                         );
-                      })}
-
+                      })}{" "}
                       <div className={styles.addLocationWrapper}>
                         <Button
                           variant="primary"
@@ -189,7 +189,7 @@ const FactoriesList = () => {
                             alt="Details"
                             style={{ width: "1rem", height: "1rem" }}
                           />
-                        </Button>{" "}
+                        </Button>
                       </Link>
                     </td>
 
@@ -214,7 +214,7 @@ const FactoriesList = () => {
         </Table>
       )}
       {error && (
-        <div>Can't get data from Firebase. Try to create new factory.</div>
+        <div>Can't get data from Firebase. Try to create a new factory.</div>
       )}
     </div>
   );

@@ -12,6 +12,7 @@ import { CREATE_FACTORY_DATA } from "../actionsType";
 
 const NewFactoryForm = () => {
   const [validated, setValidated] = useState(false);
+
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [latitude, setLatitude] = useState("");
@@ -21,11 +22,12 @@ const NewFactoryForm = () => {
   const [city, setCity] = useState("");
   const [street, setStreet] = useState("");
   const [zipCode, setZipCode] = useState("");
-  //const [latNotValid, setLatNotValid] = useState("");
-  //const [longNotValid, setLongNotValid] = useState("");
 
-  // const regexExpLat = ^-?[0-9]{1,3}(?:\.[0-9]{1,10})?$/gi;
-  // const regexExpLong = /^((\-?|\+?)?\d+(\.\d+)?)$/gi;
+  const [latValid, setLatValid] = useState(true);
+  const [longValid, setLongValid] = useState(true);
+
+  const regexExt = /^(-?[0-9]{1,2}(?:\.[0-9]{1,10})?)$/gi;
+
   const dispatch = useDispatch();
   const factoriesCollectionRef = collection(db, "factories");
   let history = useNavigate();
@@ -65,6 +67,7 @@ const NewFactoryForm = () => {
           address: [{ country, city, street, zipCode }],
         },
       });
+
       setName("");
       setDescription("");
       setLatitude("");

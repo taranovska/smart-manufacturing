@@ -5,7 +5,7 @@ import styles from "./NewFactoryForm.module.css";
 import BtnBack from "./BtnBack";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase-config";
-import {  useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import SpinnerCust from "./SpinnerCust";
@@ -87,6 +87,7 @@ const NewLocationForm = () => {
               <Form.Label>Country</Form.Label>
               <Form.Control
                 onChange={(e) => setNewCountry(e.target.value)}
+                placeholder="Enter country"
                 value={newCountry}
                 required
               ></Form.Control>
@@ -100,6 +101,7 @@ const NewLocationForm = () => {
               <Form.Control
                 onChange={(e) => setNewCity(e.target.value)}
                 value={newCity}
+                placeholder="Enter city"
                 required
               ></Form.Control>
               <Form.Control.Feedback type="invalid">
@@ -112,6 +114,7 @@ const NewLocationForm = () => {
               <Form.Control
                 onChange={(e) => setNewStreet(e.target.value)}
                 value={newStreet}
+                placeholder="Enter street"
                 required
               ></Form.Control>
               <Form.Control.Feedback type="invalid">
@@ -124,6 +127,8 @@ const NewLocationForm = () => {
               <Form.Control
                 onChange={(e) => setNewZipCode(e.target.value)}
                 value={newZipCode}
+                placeholder="Enter zip code"
+                type="number"
                 required
               ></Form.Control>
               <Form.Control.Feedback type="invalid">

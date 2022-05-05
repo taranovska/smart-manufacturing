@@ -22,7 +22,9 @@ const SearchFactoryForm = () => {
         >
           <Form.Group className="mb-3" controlId="formBasicName">
             <Form.Label>
-              <div className={styles.title}>search factory:</div>
+              <div style={{ textTransform: "uppercase" }}>
+                searching for a factory:
+              </div>
             </Form.Label>
             <Form.Control type="text" placeholder="Enter factory name" />
           </Form.Group>
