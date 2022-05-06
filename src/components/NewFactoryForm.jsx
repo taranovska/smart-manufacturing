@@ -127,6 +127,7 @@ const NewFactoryForm = () => {
             <Form.Control
               type="number"
               required
+              placeholder="Enter latitude"
               onChange={(e) => {
                 if (regexExt.test(e.target.value)) {
                   setLatitude(e.target.value);
@@ -152,6 +153,7 @@ const NewFactoryForm = () => {
             <Form.Control
               type="number"
               required
+              placeholder="Enter longitude"
               onChange={(e) => {
                 if (regexExt.test(e.target.value)) {
                   setLongitude(e.target.value);
@@ -195,6 +197,7 @@ const NewFactoryForm = () => {
             <Form.Control
               onChange={(e) => setCountry(e.target.value)}
               value={country}
+              placeholder="Enter country"
               required
             ></Form.Control>
             <Form.Control.Feedback type="invalid">
@@ -207,6 +210,7 @@ const NewFactoryForm = () => {
             <Form.Control
               onChange={(e) => setCity(e.target.value)}
               value={city}
+              placeholder="Enter city"
               required
             ></Form.Control>
             <Form.Control.Feedback type="invalid">
@@ -219,6 +223,7 @@ const NewFactoryForm = () => {
             <Form.Control
               onChange={(e) => setStreet(e.target.value)}
               value={street}
+              placeholder="Enter street"
               required
             ></Form.Control>
             <Form.Control.Feedback type="invalid">
@@ -230,6 +235,7 @@ const NewFactoryForm = () => {
             <Form.Label>Zip Code</Form.Label>
             <Form.Control
               type="number"
+              placeholder="Enter zip code"
               onChange={(e) => setZipCode(e.target.value)}
               value={zipCode}
               required

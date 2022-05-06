@@ -32,7 +32,7 @@ const FactoriesList = () => {
     "edit",
     "delete",
   ];
-
+  const [filteredData, setFilteredData] = useState([]);
   const factoriesCollectionRef = collection(db, "factories");
 
   const updateFactoryLocation = async (id, updateAddress) => {
@@ -64,6 +64,7 @@ const FactoriesList = () => {
         id: doc.id,
       }));
       dispatch(fetchDataSuccess(data));
+      setFilteredData(data);
       console.log("get data from firebase");
     } catch (error) {
       dispatch(fetchDataError(error));
@@ -81,10 +82,11 @@ const FactoriesList = () => {
     console.log("delete data from firebase");
     dispatch({ type: DISMISS_FACTORY_DATA, payload: id });
   };
-
+  useEffect(() => {
+    getFactories();
+  }, []);
   const { data, error, query, loading } = useSelector((state) => state);
 
-  const [filteredData, setFilteredData] = useState(data);
   useEffect(() => {
     setFilteredData(
       data.filter((val) => {
@@ -97,18 +99,12 @@ const FactoriesList = () => {
         }
       })
     );
-  }, [query, data]);
-
-  useEffect(() => {
-    getFactories();
-  }, []);
+  }, [query]);
 
   return (
     <div>
       {loading && <SpinnerCust />}
-      {!loading && data.length > 0 && filteredData.length === 0 && (
-        <div>No matched factories...</div>
-      )}
+
       {data.length > 0 && !loading && filteredData.length > 0 && (
         <Table
           striped
@@ -126,13 +122,21 @@ const FactoriesList = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredData
+            {data
+              .filter((val) => {
+                if (query === "") {
+                  return val;
+                } else if (
+                  val.name.toLowerCase().includes(query.toLowerCase().trim())
+                ) {
+                  return val;
+                }
+              })
               .sort((a, b) => a.name.localeCompare(b.name))
               .map((factory, index) => {
                 const { id, name, description, latitude, longitude, status } =
                   factory;
                 const { address } = factory;
-                console.log(factory);
 
                 return (
                   <tr key={id}>
@@ -222,6 +226,9 @@ const FactoriesList = () => {
               })}
           </tbody>
         </Table>
+      )}
+      {!loading && data.length > 0 && filteredData.length === 0 && query && (
+        <div>No matched factories...</div>
       )}
       {error && (
         <div>Can't get data from Firebase. Try to create a new factory.</div>

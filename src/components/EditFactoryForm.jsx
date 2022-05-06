@@ -133,6 +133,7 @@ const EditFactoryForm = () => {
               <Form.Control
                 type="number"
                 required
+                placeholder="Enter latitude"
                 onChange={(e) => {
                   if (regexExt.test(e.target.value)) {
                     setLatitude(e.target.value);
@@ -157,6 +158,7 @@ const EditFactoryForm = () => {
               <Form.Label>Longitude</Form.Label>
               <Form.Control
                 type="number"
+                placeholder="Enter longitude"
                 required
                 onChange={(e) => {
                   if (regexExt.test(e.target.value)) {
@@ -208,6 +210,7 @@ const EditFactoryForm = () => {
                       newAddress[index].country = e.target.value;
                       setAddress(newAddress);
                     }}
+                    placeholder="Enter country"
                     value={country}
                     required
                   ></Form.Control>
@@ -219,6 +222,7 @@ const EditFactoryForm = () => {
                 <Form.Group as={Col} controlId="formGridCity">
                   <Form.Label>City</Form.Label>
                   <Form.Control
+                    placeholder="Enter city"
                     onChange={(e) => {
                       newAddress[index].city = e.target.value;
                       setAddress(newAddress);
@@ -234,6 +238,7 @@ const EditFactoryForm = () => {
                 <Form.Group as={Col} controlId="formGridStreet">
                   <Form.Label>Street</Form.Label>
                   <Form.Control
+                    placeholder="Enter street"
                     onChange={(e) => {
                       newAddress[index].street = e.target.value;
                       setAddress(newAddress);
@@ -250,6 +255,7 @@ const EditFactoryForm = () => {
                   <Form.Label>Zip Code</Form.Label>
                   <Form.Control
                     type="number"
+                    placeholder="Enter zip code"
                     onChange={(e) => {
                       newAddress[index].zipCode = e.target.value;
                       setAddress(newAddress);
