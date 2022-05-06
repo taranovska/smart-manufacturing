@@ -19,9 +19,6 @@ const initialState = {
 };
 
 function reducer(state = initialState, action) {
-  if (action.type === CREATE_FACTORY_DATA) {
-    return { ...state, data: [...state.data, action.payload.factory] };
-  }
   if (action.type === FETCH_DATA_REQUEST) {
     return {
       ...state,
@@ -37,27 +34,39 @@ function reducer(state = initialState, action) {
       data: action.payload,
     };
   }
+
+  if (action.type === FETCH_DATA_ERROR) {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload.error,
+      data: [],
+    };
+  }
+
+  if (action.type === CREATE_FACTORY_DATA) {
+    return { ...state, data: [...state.data, action.payload.factory] };
+  }
+
   if (action.type === EDIT_FACTORY_DATA) {
     const newData = JSON.parse(JSON.stringify(state.data));
     let updatedEl = JSON.parse(
       JSON.stringify(newData.find((el) => el.id === action.payload.id))
     );
     updatedEl = action.payload.updatedFactoryObj;
-    console.log(action.payload);
-    console.log(updatedEl);
-    console.log("edit data");
-
     return {
       ...state,
       data: newData,
     };
   }
+
   if (action.type === DISMISS_FACTORY_DATA) {
     return {
       ...state,
       data: state.data.filter((el) => el.id !== action.payload),
     };
   }
+
   if (action.type === DEACTIVATE_EXISTING_LOCATION) {
     const newData = JSON.parse(JSON.stringify(state.data));
     const updatedEl = newData.find((el) => el.id === action.payload.id);
@@ -69,20 +78,24 @@ function reducer(state = initialState, action) {
     };
   }
 
-  if (action.type === FETCH_DATA_ERROR) {
+  if (action.type === ADD_NEW_LOCATION) {
+    const newData = JSON.parse(JSON.stringify(state.data));
+    const updatedEl = newData.find((el) => el.id === action.payload.id);
+    updatedEl.address = action.payload.address;
+
     return {
       ...state,
-      loading: false,
-      error: action.payload.error,
-      data: [],
+      data: newData,
     };
   }
+
   if (action.type === CLEAR_SEARCH_QUERY) {
     return {
       ...state,
       query: "",
     };
   }
+
   if (action.type === SEARCH_QUERY) {
     return {
       ...state,

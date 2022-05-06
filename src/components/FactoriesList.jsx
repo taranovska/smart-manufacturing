@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import styles from "./FactoriesList.module.css";
 import edit from "../img/edit.png";
@@ -84,6 +84,21 @@ const FactoriesList = () => {
 
   const { data, error, query, loading } = useSelector((state) => state);
 
+  const [filteredData, setFilteredData] = useState(data);
+  useEffect(() => {
+    setFilteredData(
+      data.filter((val) => {
+        if (query === "") {
+          return val;
+        } else if (
+          val.name.toLowerCase().includes(query.toLowerCase().trim())
+        ) {
+          return val;
+        }
+      })
+    );
+  }, [query, data]);
+
   useEffect(() => {
     getFactories();
   }, []);
@@ -91,7 +106,10 @@ const FactoriesList = () => {
   return (
     <div>
       {loading && <SpinnerCust />}
-      {data.length > 0 && !loading && (
+      {!loading && data.length > 0 && filteredData.length === 0 && (
+        <div>No matched factories...</div>
+      )}
+      {data.length > 0 && !loading && filteredData.length > 0 && (
         <Table
           striped
           bordered
@@ -108,21 +126,13 @@ const FactoriesList = () => {
             </tr>
           </thead>
           <tbody>
-            {data
-              .filter((val) => {
-                if (query === "") {
-                  return val;
-                } else if (
-                  val.name.toLowerCase().includes(query.toLowerCase().trim())
-                ) {
-                  return val;
-                }
-              })
+            {filteredData
               .sort((a, b) => a.name.localeCompare(b.name))
               .map((factory, index) => {
                 const { id, name, description, latitude, longitude, status } =
                   factory;
                 const { address } = factory;
+                console.log(factory);
 
                 return (
                   <tr key={id}>

@@ -7,13 +7,15 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase-config";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import SpinnerCust from "./SpinnerCust";
+import { ADD_NEW_LOCATION } from "../actionsType";
 
 const NewLocationForm = () => {
   const params = useParams();
   const data = useSelector((state) => state.data);
   const currentFactory = data.find((factory) => factory.id === params.id);
+  const dispatch = useDispatch();
 
   const [validated, setValidated] = useState(false);
   const [sending, setSending] = useState(false);
@@ -21,11 +23,6 @@ const NewLocationForm = () => {
   const [newCity, setNewCity] = useState("");
   const [newStreet, setNewStreet] = useState("");
   const [newZipCode, setNewZipCode] = useState("");
-  //const [latNotValid, setLatNotValid] = useState("");
-  //const [longNotValid, setLongNotValid] = useState("");
-
-  // const regexExpLat = /^((\-?|\+?)?\d+(\.\d+)?)$/gi;
-  // const regexExpLong = /^((\-?|\+?)?\d+(\.\d+)?)$/gi;
 
   let history = useNavigate();
 
@@ -59,6 +56,23 @@ const NewLocationForm = () => {
       console.log("dont validate add new address");
     }
     if (form.checkValidity() === true) {
+      dispatch({
+        type: ADD_NEW_LOCATION,
+        payload: {
+          id: params.id,
+          address: [
+            ...[
+              ...currentFactory.address,
+              {
+                country: newCountry,
+                city: newCity,
+                street: newStreet,
+                zipCode: newZipCode,
+              },
+            ],
+          ],
+        },
+      });
       setValidated(false);
       setSending(true);
       setTimeout(() => {
@@ -125,10 +139,10 @@ const NewLocationForm = () => {
             <Form.Group className="mb-3" controlId="formGridZip">
               <Form.Label>Zip Code</Form.Label>
               <Form.Control
+                type="number"
                 onChange={(e) => setNewZipCode(e.target.value)}
                 value={newZipCode}
                 placeholder="Enter zip code"
-                type="number"
                 required
               ></Form.Control>
               <Form.Control.Feedback type="invalid">

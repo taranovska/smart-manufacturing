@@ -134,11 +134,21 @@ const EditFactoryForm = () => {
                 type="number"
                 required
                 onChange={(e) => {
-                  setLatitude(e.target.value);
+                  if (regexExt.test(e.target.value)) {
+                    setLatitude(e.target.value);
+                    setLatValid(true);
+                  } else {
+                    setLatValid(false);
+                    setLatitude("");
+                  }
                 }}
                 value={latitude}
               />
-
+              {latValid === false && (
+                <span style={{ color: "#dc3545" }}>
+                  Not valid latitude format
+                </span>
+              )}
               <Form.Control.Feedback type="invalid">
                 Please provide latitude.
               </Form.Control.Feedback>
@@ -149,10 +159,21 @@ const EditFactoryForm = () => {
                 type="number"
                 required
                 onChange={(e) => {
-                  setLongitude(e.target.value);
+                  if (regexExt.test(e.target.value)) {
+                    setLongitude(e.target.value);
+                    setLongValid(true);
+                  } else {
+                    setLongValid(false);
+                    setLongitude("");
+                  }
                 }}
                 value={longitude}
               />
+              {longValid === false && (
+                <span style={{ color: "#dc3545" }}>
+                  Not valid longitude format
+                </span>
+              )}
               <Form.Control.Feedback type="invalid">
                 Please provide longitude.
               </Form.Control.Feedback>
@@ -228,6 +249,7 @@ const EditFactoryForm = () => {
                 <Form.Group as={Col} controlId="formGridZip">
                   <Form.Label>Zip Code</Form.Label>
                   <Form.Control
+                    type="number"
                     onChange={(e) => {
                       newAddress[index].zipCode = e.target.value;
                       setAddress(newAddress);
