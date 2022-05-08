@@ -1,13 +1,13 @@
 import React from "react";
-import AddNewFactoryButton from "../components/AddNewFactoryButton";
+import AddNewFactoryButton from "../components/AddNewFactoryBtn";
 import FactoriesList from "../components/FactoriesList";
-import SearchFactoryForm from "../components/SearchFactoryForm";
+import SearchFactoryInput from "../components/SearchFactoryInput";
 
 const MainPage = () => {
   return (
     <>
       <AddNewFactoryButton />
-      <SearchFactoryForm />
+      <SearchFactoryInput />
       <FactoriesList />
     </>
   );

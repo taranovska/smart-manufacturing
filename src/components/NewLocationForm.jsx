@@ -8,7 +8,7 @@ import { db } from "../firebase-config";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import SpinnerCust from "./SpinnerCust";
+import SpinnerComponent from "./SpinnerComponent";
 import { ADD_NEW_LOCATION } from "../actionsType";
 
 const NewLocationForm = () => {
@@ -16,6 +16,7 @@ const NewLocationForm = () => {
   const data = useSelector((state) => state.data);
   const currentFactory = data.find((factory) => factory.id === params.id);
   const dispatch = useDispatch();
+  const history = useNavigate();
 
   const [validated, setValidated] = useState(false);
   const [sending, setSending] = useState(false);
@@ -24,11 +25,8 @@ const NewLocationForm = () => {
   const [newStreet, setNewStreet] = useState("");
   const [newZipCode, setNewZipCode] = useState("");
 
-  let history = useNavigate();
-
   const addNewAddress = async (id) => {
     const factoryDoc = doc(db, "factories", id);
-
     await updateDoc(factoryDoc, {
       address: [
         ...[
@@ -42,7 +40,6 @@ const NewLocationForm = () => {
         ],
       ],
     });
-    console.log("edit factory firebase");
   };
 
   const handleSubmit = (event) => {
@@ -53,7 +50,6 @@ const NewLocationForm = () => {
       event.stopPropagation();
       setSending(false);
       setValidated(true);
-      console.log("dont validate add new address");
     }
     if (form.checkValidity() === true) {
       dispatch({
@@ -79,13 +75,12 @@ const NewLocationForm = () => {
         history("/");
       }, 1000);
       addNewAddress(params.id);
-      console.log("validate new address");
     }
   };
 
   return (
     <>
-      {sending && <SpinnerCust />}
+      {sending && <SpinnerComponent />}
       {!sending && (
         <>
           <h1 className={styles.title}>
@@ -109,7 +104,6 @@ const NewLocationForm = () => {
                 Please provide country.
               </Form.Control.Feedback>
             </Form.Group>
-
             <Form.Group className="mb-3" controlId="formGridCity">
               <Form.Label>City</Form.Label>
               <Form.Control
@@ -122,7 +116,6 @@ const NewLocationForm = () => {
                 Please provide city.
               </Form.Control.Feedback>
             </Form.Group>
-
             <Form.Group className="mb-3" controlId="formGridStreet">
               <Form.Label>Street</Form.Label>
               <Form.Control
@@ -135,7 +128,6 @@ const NewLocationForm = () => {
                 Please provide street.
               </Form.Control.Feedback>
             </Form.Group>
-
             <Form.Group className="mb-3" controlId="formGridZip">
               <Form.Label>Zip Code</Form.Label>
               <Form.Control
@@ -149,7 +141,6 @@ const NewLocationForm = () => {
                 Please provide zip code.
               </Form.Control.Feedback>
             </Form.Group>
-
             <div className={styles.buttons}>
               <BtnBack />
               <Button variant="primary" type="submit" className={styles.submit}>

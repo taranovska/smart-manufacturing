@@ -2,9 +2,8 @@ import React from "react";
 import { Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { CLEAR_SEARCH_QUERY, SEARCH_QUERY } from "../actionsType";
-import styles from "./SearchFactoryForm";
 
-const SearchFactoryForm = () => {
+const SearchFactoryInput = () => {
   const loading = useSelector((state) => state.loading);
   const data = useSelector((state) => state.data);
   const dispatch = useDispatch();
@@ -34,4 +33,4 @@ const SearchFactoryForm = () => {
   );
 };
 
-export default SearchFactoryForm;
+export default SearchFactoryInput;

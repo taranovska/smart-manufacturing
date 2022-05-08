@@ -54,6 +54,7 @@ function reducer(state = initialState, action) {
       JSON.stringify(newData.find((el) => el.id === action.payload.id))
     );
     updatedEl = action.payload.updatedFactoryObj;
+
     return {
       ...state,
       data: newData,

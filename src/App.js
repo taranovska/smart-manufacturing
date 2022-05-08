@@ -1,5 +1,4 @@
-import logo from "./logo.svg";
-import "./App.css";
+import "./index.css";
 import NewFactoryForm from "./components/NewFactoryForm";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainPage from "./pages/MainPage";
