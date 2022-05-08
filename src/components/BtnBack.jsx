@@ -7,7 +7,7 @@ import styles from "./BtnBack.module.css";
 export default function BtnBack() {
   return (
     <Button variant="info">
-      <Link to="/" className={styles.addFactory}>
+      <Link to="/" className={styles.back}>
         <div className={styles.flex}>
           <img
             src={back}

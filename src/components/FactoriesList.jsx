@@ -15,7 +15,7 @@ import {
 } from "firebase/firestore";
 import { fetchDataError, fetchDataRequest, fetchDataSuccess } from "../actions";
 import { Link } from "react-router-dom";
-import SpinnerCust from "./SpinnerCust";
+import SpinnerComponent from "./SpinnerComponent";
 import {
   DISMISS_FACTORY_DATA,
   DEACTIVATE_EXISTING_LOCATION,
@@ -32,21 +32,21 @@ const FactoriesList = () => {
     "edit",
     "delete",
   ];
+
+  const dispatch = useDispatch();
+  const { data, error, query, loading } = useSelector((state) => state);
   const [filteredData, setFilteredData] = useState([]);
-  const factoriesCollectionRef = collection(db, "factories");
+  const factoriesCollection = collection(db, "factories");
 
   const updateFactoryLocation = async (id, updateAddress) => {
     const factoryDoc = doc(db, "factories", id);
-
     await updateDoc(factoryDoc, {
       address: [...updateAddress],
     });
-    console.log("edit factory address firebase");
   };
 
   const deleteLocation = (id, index, address, item) => {
     const updateAddress = address.filter((obj) => obj !== item);
-    console.log(id, index, address, item);
     updateFactoryLocation(id, updateAddress);
     dispatch({
       type: DEACTIVATE_EXISTING_LOCATION,
@@ -56,55 +56,40 @@ const FactoriesList = () => {
 
   const getFactories = async () => {
     dispatch(fetchDataRequest());
-    console.log("send request getting data from firebase");
     try {
-      const dataFirebase = await getDocs(factoriesCollectionRef);
+      const dataFirebase = await getDocs(factoriesCollection);
       const data = dataFirebase.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
       }));
       dispatch(fetchDataSuccess(data));
       setFilteredData(data);
-      console.log("get data from firebase");
     } catch (error) {
       dispatch(fetchDataError(error));
-      console.log(error);
-      console.log("error getting data from firebase");
     }
   };
 
-  const dispatch = useDispatch();
-
-  const deleteHandler = async (id) => {
+  const deleteFactory = async (id) => {
     const factoryDoc = doc(db, "factories", id);
     await deleteDoc(factoryDoc);
-
-    console.log("delete data from firebase");
     dispatch({ type: DISMISS_FACTORY_DATA, payload: id });
   };
   useEffect(() => {
     getFactories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const { data, error, query, loading } = useSelector((state) => state);
 
   useEffect(() => {
     setFilteredData(
-      data.filter((val) => {
-        if (query === "") {
-          return val;
-        } else if (
-          val.name.toLowerCase().includes(query.toLowerCase().trim())
-        ) {
-          return val;
-        }
-      })
+      (val) =>
+        query === "" ||
+        val.name.toLowerCase().includes(query.toLowerCase().trim())
     );
   }, [query]);
 
   return (
     <div>
-      {loading && <SpinnerCust />}
-
+      {loading && <SpinnerComponent />}
       {data.length > 0 && !loading && filteredData.length > 0 && (
         <Table
           striped
@@ -123,24 +108,26 @@ const FactoriesList = () => {
           </thead>
           <tbody>
             {data
-              .filter((val) => {
-                if (query === "") {
-                  return val;
-                } else if (
+              .filter(
+                (val) =>
+                  query === "" ||
                   val.name.toLowerCase().includes(query.toLowerCase().trim())
-                ) {
-                  return val;
-                }
-              })
+              )
               .sort((a, b) => a.name.localeCompare(b.name))
               .map((factory, index) => {
-                const { id, name, description, latitude, longitude, status } =
-                  factory;
-                const { address } = factory;
+                const {
+                  id,
+                  name,
+                  description,
+                  latitude,
+                  longitude,
+                  status,
+                  address,
+                } = factory;
 
                 return (
                   <tr key={id}>
-                    <td className={styles.centered}>{index + 1}</td>
+                    <td>{index + 1}</td>
                     <td>{name}</td>
                     <td>{description}</td>
                     <td>{`${latitude} / ${longitude}`}</td>
@@ -149,12 +136,9 @@ const FactoriesList = () => {
                       {address.map((item, index) => {
                         return (
                           <div key={index} className={styles.addressWrapper}>
-                            <div className={styles.address}>{`${
-                              item.country
-                            }, ${item.city}, ${item.street}, ${
-                              item.zipCode === null ? "-" : item.zipCode
-                            }`}</div>
-
+                            <div
+                              className={styles.address}
+                            >{`${item.country}, ${item.city}, ${item.street}, ${item.zipCode}`}</div>
                             {address.length > 1 && (
                               <Button
                                 variant="link"
@@ -176,13 +160,13 @@ const FactoriesList = () => {
                         );
                       })}{" "}
                       <div className={styles.addLocationWrapper}>
-                        <Button
-                          variant="primary"
-                          className={styles.btnAddLocation}
+                        <Link
+                          to={`/newLocation/${id}`}
+                          className={styles.addLocation}
                         >
-                          <Link
-                            to={`/newLocation/${id}`}
-                            className={styles.addLocation}
+                          <Button
+                            variant="primary"
+                            className={styles.btnAddLocation}
                           >
                             <img
                               src={add}
@@ -190,12 +174,11 @@ const FactoriesList = () => {
                               style={{ width: "0.9rem", height: "0.9rem" }}
                             ></img>
                             <div className={styles.addTitle}>add location</div>
-                          </Link>
-                        </Button>
+                          </Button>
+                        </Link>
                       </div>
                     </td>
-
-                    <td className={styles.centered}>
+                    <td>
                       <Link to={`/${id}`}>
                         <Button variant="info">
                           <img
@@ -206,12 +189,11 @@ const FactoriesList = () => {
                         </Button>
                       </Link>
                     </td>
-
-                    <td className={styles.centered}>
+                    <td>
                       <Button
                         variant="link"
                         onClick={() => {
-                          deleteHandler(id);
+                          deleteFactory(id);
                         }}
                       >
                         <img

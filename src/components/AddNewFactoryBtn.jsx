@@ -1,9 +1,9 @@
 import React from "react";
 import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import styles from "./AddNewFactoryButton.module.css";
+import styles from "./AddNewFactoryBtn.module.css";
 
-const AddNewFactoryButton = () => {
+const AddNewFactoryBtn = () => {
   return (
     <div className={styles.wrapper}>
       <Link to="/newFactory" className={styles.addFactory}>
@@ -15,4 +15,4 @@ const AddNewFactoryButton = () => {
   );
 };
 
-export default AddNewFactoryButton;
+export default AddNewFactoryBtn;

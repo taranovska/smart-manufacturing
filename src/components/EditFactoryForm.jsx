@@ -6,15 +6,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase-config";
-
 import { EDIT_FACTORY_DATA } from "../actionsType";
-import SpinnerCust from "./SpinnerCust";
+import SpinnerComponent from "./SpinnerComponent";
 import BtnBack from "./BtnBack";
 
 const EditFactoryForm = () => {
   const params = useParams();
+  const history = useNavigate();
+  const dispatch = useDispatch();
   const data = useSelector((state) => state.data);
   const currentFactory = data.find((factory) => factory.id === params.id);
+  const coordinatesPattern = /^(-?[0-9]{1,2}(?:\.[0-9]{1,10})?)$/gi;
 
   const {
     name: prevName,
@@ -22,25 +24,19 @@ const EditFactoryForm = () => {
     latitude: prevLatitude,
     longitude: prevLongitude,
     status: prevStatus,
+    address: prevAddress,
   } = currentFactory;
-  const { address: prevAddress } = currentFactory;
-  const dispatch = useDispatch();
 
   const [validated, setValidated] = useState(false);
-
   const [sending, setSending] = useState(false);
-  const [latValid, setLatValid] = useState(true);
-  const [longValid, setLongValid] = useState(true);
+  const [latIsValid, setLatIsValid] = useState(true);
+  const [longIsValid, setLongIsValid] = useState(true);
   const [name, setName] = useState(prevName);
   const [description, setDescription] = useState(prevDescription);
   const [latitude, setLatitude] = useState(prevLatitude);
   const [longitude, setLongitude] = useState(prevLongitude);
   const [address, setAddress] = useState(prevAddress);
-
   const [status, setStatus] = useState(prevStatus);
-
-  let history = useNavigate();
-  const regexExt = /^(-?[0-9]{1,2}(?:\.[0-9]{1,10})?)$/gi;
 
   const updateFactoryData = async (id) => {
     const factoryDoc = doc(db, "factories", id);
@@ -53,20 +49,16 @@ const EditFactoryForm = () => {
       status,
       address: [...address],
     });
-    console.log("edit factory firebase");
   };
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
     event.preventDefault();
     if (form.checkValidity() === false) {
-      event.preventDefault();
       event.stopPropagation();
       setValidated(true);
       setSending(false);
-      console.log("not validated form edit");
-    }
-    if (form.checkValidity() === true) {
+    } else if (form.checkValidity() === true) {
       dispatch({
         type: EDIT_FACTORY_DATA,
         payload: {
@@ -87,13 +79,12 @@ const EditFactoryForm = () => {
       setTimeout(() => {
         history("/");
       }, 1000);
-      console.log("validated form edit");
     }
   };
 
   return (
     <>
-      {sending && <SpinnerCust />}
+      {sending && <SpinnerComponent />}
       {!sending && (
         <Form
           className={styles.formNewFactory}
@@ -135,17 +126,17 @@ const EditFactoryForm = () => {
                 required
                 placeholder="Enter latitude"
                 onChange={(e) => {
-                  if (regexExt.test(e.target.value)) {
+                  if (coordinatesPattern.test(e.target.value)) {
                     setLatitude(e.target.value);
-                    setLatValid(true);
+                    setLatIsValid(true);
                   } else {
-                    setLatValid(false);
+                    setLatIsValid(false);
                     setLatitude("");
                   }
                 }}
                 value={latitude}
               />
-              {latValid === false && (
+              {!latIsValid && (
                 <span style={{ color: "#dc3545" }}>
                   Not valid latitude format
                 </span>
@@ -161,17 +152,17 @@ const EditFactoryForm = () => {
                 placeholder="Enter longitude"
                 required
                 onChange={(e) => {
-                  if (regexExt.test(e.target.value)) {
+                  if (coordinatesPattern.test(e.target.value)) {
                     setLongitude(e.target.value);
-                    setLongValid(true);
+                    setLongIsValid(true);
                   } else {
-                    setLongValid(false);
+                    setLongIsValid(false);
                     setLongitude("");
                   }
                 }}
                 value={longitude}
               />
-              {longValid === false && (
+              {!longIsValid && (
                 <span style={{ color: "#dc3545" }}>
                   Not valid longitude format
                 </span>
@@ -197,7 +188,6 @@ const EditFactoryForm = () => {
               Please select a status.
             </Form.Control.Feedback>
           </Form.Group>
-
           {address.map((item, index) => {
             const newAddress = JSON.parse(JSON.stringify(address));
             const { country, city, street, zipCode } = item;
@@ -218,7 +208,6 @@ const EditFactoryForm = () => {
                     Please provide country.
                   </Form.Control.Feedback>
                 </Form.Group>
-
                 <Form.Group as={Col} controlId="formGridCity">
                   <Form.Label>City</Form.Label>
                   <Form.Control
@@ -234,7 +223,6 @@ const EditFactoryForm = () => {
                     Please provide city.
                   </Form.Control.Feedback>
                 </Form.Group>
-
                 <Form.Group as={Col} controlId="formGridStreet">
                   <Form.Label>Street</Form.Label>
                   <Form.Control
@@ -250,7 +238,6 @@ const EditFactoryForm = () => {
                     Please provide street.
                   </Form.Control.Feedback>
                 </Form.Group>
-
                 <Form.Group as={Col} controlId="formGridZip">
                   <Form.Label>Zip Code</Form.Label>
                   <Form.Control
@@ -260,7 +247,7 @@ const EditFactoryForm = () => {
                       newAddress[index].zipCode = e.target.value;
                       setAddress(newAddress);
                     }}
-                    value={`${zipCode === null ? "-" : zipCode}`}
+                    value={zipCode}
                     required
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
@@ -270,7 +257,6 @@ const EditFactoryForm = () => {
               </Row>
             );
           })}
-
           <div className={styles.buttons}>
             <BtnBack />
             <Button variant="primary" type="submit" className={styles.submit}>

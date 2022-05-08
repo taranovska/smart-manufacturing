@@ -11,8 +11,12 @@ import { useDispatch } from "react-redux";
 import { CREATE_FACTORY_DATA } from "../actionsType";
 
 const NewFactoryForm = () => {
-  const [validated, setValidated] = useState(false);
+  const dispatch = useDispatch();
+  let history = useNavigate();
+  const coordinatesPattern = /^(-?[0-9]{1,2}(?:\.[0-9]{1,10})?)$/gi;
+  const factoriesCollection = collection(db, "factories");
 
+  const [validated, setValidated] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [latitude, setLatitude] = useState("");
@@ -22,18 +26,11 @@ const NewFactoryForm = () => {
   const [city, setCity] = useState("");
   const [street, setStreet] = useState("");
   const [zipCode, setZipCode] = useState("");
-
-  const [latValid, setLatValid] = useState(true);
-  const [longValid, setLongValid] = useState(true);
-
-  const regexExt = /^(-?[0-9]{1,2}(?:\.[0-9]{1,10})?)$/gi;
-
-  const dispatch = useDispatch();
-  const factoriesCollectionRef = collection(db, "factories");
-  let history = useNavigate();
+  const [latIsValid, setLatIsValid] = useState(true);
+  const [longIsValid, setLongIsValid] = useState(true);
 
   const createFactory = async () => {
-    await addDoc(factoriesCollectionRef, {
+    await addDoc(factoriesCollection, {
       name,
       description,
       latitude,
@@ -41,19 +38,15 @@ const NewFactoryForm = () => {
       status,
       address: [{ country, city, street, zipCode }],
     });
-    console.log("create factory firebase");
   };
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
     event.preventDefault();
     if (form.checkValidity() === false) {
-      event.preventDefault();
       event.stopPropagation();
       setValidated(true);
-      console.log("dont validate new factory form");
-    }
-    if (form.checkValidity() === true) {
+    } else if (form.checkValidity() === true) {
       createFactory();
       dispatch({
         type: CREATE_FACTORY_DATA,
@@ -67,7 +60,6 @@ const NewFactoryForm = () => {
           address: [{ country, city, street, zipCode }],
         },
       });
-
       setName("");
       setDescription("");
       setLatitude("");
@@ -81,7 +73,6 @@ const NewFactoryForm = () => {
       setTimeout(() => {
         history("/");
       }, 1000);
-      console.log("validate new factory form");
     }
   };
 
@@ -123,23 +114,22 @@ const NewFactoryForm = () => {
         <Row className="mb-3">
           <Form.Group as={Col} controlId="validationCustom03">
             <Form.Label>Latitude</Form.Label>
-
             <Form.Control
               type="number"
               required
               placeholder="Enter latitude"
               onChange={(e) => {
-                if (regexExt.test(e.target.value)) {
+                if (coordinatesPattern.test(e.target.value)) {
                   setLatitude(e.target.value);
-                  setLatValid(true);
+                  setLatIsValid(true);
                 } else {
-                  setLatValid(false);
+                  setLatIsValid(false);
                   setLatitude("");
                 }
               }}
               value={latitude}
             />
-            {latValid === false && (
+            {!latIsValid && (
               <span style={{ color: "#dc3545" }}>
                 Not valid latitude format
               </span>
@@ -155,17 +145,17 @@ const NewFactoryForm = () => {
               required
               placeholder="Enter longitude"
               onChange={(e) => {
-                if (regexExt.test(e.target.value)) {
+                if (coordinatesPattern.test(e.target.value)) {
                   setLongitude(e.target.value);
-                  setLongValid(true);
+                  setLongIsValid(true);
                 } else {
-                  setLongValid(false);
+                  setLongIsValid(false);
                   setLongitude("");
                 }
               }}
               value={longitude}
             />
-            {longValid === false && (
+            {!longIsValid && (
               <span style={{ color: "#dc3545" }}>
                 Not valid longitude format
               </span>
@@ -204,7 +194,6 @@ const NewFactoryForm = () => {
               Please provide country.
             </Form.Control.Feedback>
           </Form.Group>
-
           <Form.Group as={Col} controlId="formGridCity">
             <Form.Label>City</Form.Label>
             <Form.Control
@@ -217,7 +206,6 @@ const NewFactoryForm = () => {
               Please provide city.
             </Form.Control.Feedback>
           </Form.Group>
-
           <Form.Group as={Col} controlId="formGridStreet">
             <Form.Label>Street</Form.Label>
             <Form.Control
@@ -230,7 +218,6 @@ const NewFactoryForm = () => {
               Please provide street.
             </Form.Control.Feedback>
           </Form.Group>
-
           <Form.Group as={Col} controlId="formGridZip">
             <Form.Label>Zip Code</Form.Label>
             <Form.Control

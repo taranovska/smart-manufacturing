@@ -1,13 +1,9 @@
-.addFactory {
+a.back,
+a.back:link,
+a.back:visited,
+a.back:hover,
+a.back:active {
   text-transform: uppercase;
-  text-decoration: none;
-  color: white;
-}
-a.addFactory:link,
-a.addFactory,
-a.addFactory:visited,
-a.addFactory:hover,
-a.addFactory:active {
   text-decoration: none;
   color: white;
 }
