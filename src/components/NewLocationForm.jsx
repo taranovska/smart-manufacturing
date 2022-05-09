@@ -14,6 +14,7 @@ import { ADD_NEW_LOCATION } from "../actionsType";
 const NewLocationForm = () => {
   const params = useParams();
   const data = useSelector((state) => state.data);
+  const error = useSelector((state) => state.error);
   const currentFactory = data.find((factory) => factory.id === params.id);
   const dispatch = useDispatch();
   const history = useNavigate();
@@ -74,7 +75,7 @@ const NewLocationForm = () => {
       setTimeout(() => {
         history("/");
       }, 1000);
-      addNewAddress(params.id);
+      !error && addNewAddress(params.id);
     }
   };
 

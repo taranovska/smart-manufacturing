@@ -15,6 +15,7 @@ const EditFactoryForm = () => {
   const history = useNavigate();
   const dispatch = useDispatch();
   const data = useSelector((state) => state.data);
+  const error = useSelector((state) => state.error);
   const currentFactory = data.find((factory) => factory.id === params.id);
   const coordinatesPattern = /^(-?[0-9]{1,2}(?:\.[0-9]{1,10})?)$/gi;
 
@@ -73,7 +74,7 @@ const EditFactoryForm = () => {
           },
         },
       });
-      updateFactoryData(params.id);
+      !error && updateFactoryData(params.id);
       setValidated(false);
       setSending(true);
       setTimeout(() => {

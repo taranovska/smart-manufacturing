@@ -7,11 +7,12 @@ import BtnBack from "./BtnBack";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../firebase-config";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { CREATE_FACTORY_DATA } from "../actionsType";
 
 const NewFactoryForm = () => {
   const dispatch = useDispatch();
+  const error = useSelector((state) => state.error);
   let history = useNavigate();
   const coordinatesPattern = /^(-?[0-9]{1,2}(?:\.[0-9]{1,10})?)$/gi;
   const factoriesCollection = collection(db, "factories");
@@ -47,7 +48,7 @@ const NewFactoryForm = () => {
       event.stopPropagation();
       setValidated(true);
     } else if (form.checkValidity() === true) {
-      createFactory();
+      !error && createFactory();
       dispatch({
         type: CREATE_FACTORY_DATA,
         payload: {

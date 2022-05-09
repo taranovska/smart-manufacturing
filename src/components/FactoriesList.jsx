@@ -47,7 +47,7 @@ const FactoriesList = () => {
 
   const deleteLocation = (id, index, address, item) => {
     const updateAddress = address.filter((obj) => obj !== item);
-    updateFactoryLocation(id, updateAddress);
+    !error && updateFactoryLocation(id, updateAddress);
     dispatch({
       type: DEACTIVATE_EXISTING_LOCATION,
       payload: { id, updateAddress, index, item },
@@ -57,8 +57,8 @@ const FactoriesList = () => {
   const getFactories = async () => {
     dispatch(fetchDataRequest());
     try {
-      const dataFirebase = await getDocs(factoriesCollection);
-      const data = dataFirebase.docs.map((doc) => ({
+      const dataFromFirebase = await getDocs(factoriesCollection);
+      const data = dataFromFirebase.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
       }));
@@ -71,7 +71,7 @@ const FactoriesList = () => {
 
   const deleteFactory = async (id) => {
     const factoryDoc = doc(db, "factories", id);
-    await deleteDoc(factoryDoc);
+    !error && (await deleteDoc(factoryDoc));
     dispatch({ type: DISMISS_FACTORY_DATA, payload: id });
   };
   useEffect(() => {
@@ -81,9 +81,11 @@ const FactoriesList = () => {
 
   useEffect(() => {
     setFilteredData(
-      (val) =>
-        query === "" ||
-        val.name.toLowerCase().includes(query.toLowerCase().trim())
+      data.filter(
+        (val) =>
+          query === "" ||
+          val.name.toLowerCase().includes(query.toLowerCase().trim())
+      )
     );
   }, [query]);
 

@@ -6,17 +6,19 @@ import styles from "./BtnBack.module.css";
 
 export default function BtnBack() {
   return (
-    <Button variant="info">
-      <Link to="/" className={styles.back}>
-        <div className={styles.flex}>
-          <img
-            src={back}
-            alt="Return back"
-            style={{ width: "1rem", height: "1rem", marginRight: "10px" }}
-          />
-          <div>Back</div>
-        </div>
+    <div className={styles.back}>
+      <Link to="/">
+        <Button variant="info">
+          <div className={styles.flex}>
+            <img
+              src={back}
+              alt="Return back"
+              style={{ width: "1rem", height: "1rem", marginRight: "10px" }}
+            />
+            <div className={styles.title}>Back</div>
+          </div>
+        </Button>
       </Link>
-    </Button>
+    </div>
   );
 }
